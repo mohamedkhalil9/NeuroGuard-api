@@ -9,8 +9,8 @@ import mongoose from 'mongoose';
 import './services/passport.js';
 import cors from 'cors';
 
-import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 import morgan from 'morgan';
 import { v2  as cloudinary } from 'cloudinary';
 
@@ -29,14 +29,10 @@ app.use(session({
   }) 
 }))
 
-// XSS - CSRF
-// MORGAN
-// WINSTON
-// SWAGGER
-// Cloudinary
-// notifications
-// payment
-// dev and prod env
+// XSS - CSRF (cros site something) 'security'
+// WINSTON (logger)
+// SWAGGER (api documentation with ui 'swagger-ui')
+// dev and prod env (.env variable for diffrenet environments for control over them)
 
 //cloudinary.config({ 
 //  cloud_name: 'my_cloud_name', 
