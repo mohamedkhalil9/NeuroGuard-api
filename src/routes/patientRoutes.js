@@ -21,6 +21,7 @@ router.route('/:id')
 
 // get patient's appointments 
 // ROLES Patient and Admin
+// Validation: id is a patient id
 router.get('/:id/appointments', getPatientAppointments)
 router.get('/:id/appointments/:appointmentId', getPatientAppointment)
 

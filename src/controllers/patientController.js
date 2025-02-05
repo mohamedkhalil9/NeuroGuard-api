@@ -1,13 +1,32 @@
 import Patient from './../models/patientModel.js';
+import Appointment from './../models/appointmentModel.js';
 import asyncWrapper from './../middlewares/asyncWrapper.js';
 import ApiError from './../utils/apiError.js';
 
 export const getPatientAppointments = asyncWrapper(async (req, res) => {
+  const { id } = req.params;
 
-})
+  const appointments = await Appointment.find({ patient: id })
+    .populate('doctor', 'firstName lastName specialization') // Populate doctor details
+    .populate("patient", 'firstName lastName'); // Populate patient details (optional)
+
+  res.status(200).json({ status: 'success', data: appointments });
+});
 
 export const getPatientAppointment = asyncWrapper(async (req, res) => {
+  const { id, appointmentId } = req.params;
 
+  // Could be User.find() also => discriminator: same document
+  //const patient = await User.findById(id);
+  const patient = await Patient.findById(id);
+  if (!patient || patient.role !== 'patient') throw new ApiError('patient not found', 404)
+
+  const appointment = await Appointment.findOne({_id: appointmentId, patient: id})
+    .populate('doctor', 'firstName lastName specialization'); // Populate doctor details
+
+  if (!appointment) throw new ApiError('appointment not found', 404)
+
+  res.status(200).json({ status: 'success', data: appointment});
 })
 
 export const getPatients = asyncWrapper(async (req, res) => {
@@ -45,19 +64,19 @@ export const getPatient = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", data: { patient }});
 })
 
-export const toggleComplete = asyncWrapper(async(req, res) => {
-  const { id } = req.params;
-
-  const patient = await Patient.findById(id);
-  if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
-
-  //patient = !patient.completed;
-  //const updatedPatient = await patient.save();
-  const toggle = !patient.completed;
-  const updatedPatient = await Patient.findByIdAndUpdate(id, { completed: toggle }, { new: true });
-
-  res.status(200).json({ status: 'success', data: { updatedPatient }});
-})
+//export const toggleComplete = asyncWrapper(async(req, res) => {
+//  const { id } = req.params;
+//
+//  const patient = await Patient.findById(id);
+//  if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
+//
+//  //patient = !patient.completed;
+//  //const updatedPatient = await patient.save();
+//  const toggle = !patient.completed;
+//  const updatedPatient = await Patient.findByIdAndUpdate(id, { completed: toggle }, { new: true });
+//
+//  res.status(200).json({ status: 'success', data: { updatedPatient }});
+//})
 
 export const updatePatient = asyncWrapper(async (req, res) => {
   const { id } = req.params;

@@ -1,4 +1,6 @@
 import Doctor from './../models/doctorModel.js';
+import Appointment from './../models/appointmentModel.js';
+import Patien from './../models/patientModel.js';
 import asyncWrapper from './../middlewares/asyncWrapper.js';
 import ApiError from './../utils/apiError.js';
 
@@ -7,7 +9,11 @@ export const getDoctorPatients = asyncWrapper(async (req, res) => {
 })
 
 export const getDoctorAppointments = asyncWrapper(async (req, res) => {
-
+  const { id } = req.params;
+  const appointments = await Appointment.find({ doctor: id })
+    .populate('patient', 'firstName lastName') // Populate patient details
+    .populate('doctor', 'firstName lastName specialization'); // Populate doctor details (optional)
+  res.status(200).json({ status: 'success', data: appointments });
 })
 
 export const getDoctorPatient = asyncWrapper(async (req, res) => {
@@ -54,19 +60,19 @@ export const getDoctor = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", data: { doctor }});
 })
 
-export const toggleComplete = asyncWrapper(async(req, res) => {
-  const { id } = req.params;
-
-  const doctor = await Doctor.findById(id);
-  if (!doctor) throw new ApiError(`there is no doctor with id ${id}`, 404);
-
-  //doctor = !doctor.completed;
-  //const updatedDoctor = await doctor.save();
-  const toggle = !doctor.completed;
-  const updatedDoctor = await Doctor.findByIdAndUpdate(id, { completed: toggle }, { new: true });
-
-  res.status(200).json({ status: 'success', data: { updatedDoctor }});
-})
+//export const toggleComplete = asyncWrapper(async(req, res) => {
+//  const { id } = req.params;
+//
+//  const doctor = await Doctor.findById(id);
+//  if (!doctor) throw new ApiError(`there is no doctor with id ${id}`, 404);
+//
+//  //doctor = !doctor.completed;
+//  //const updatedDoctor = await doctor.save();
+//  const toggle = !doctor.completed;
+//  const updatedDoctor = await Doctor.findByIdAndUpdate(id, { completed: toggle }, { new: true });
+//
+//  res.status(200).json({ status: 'success', data: { updatedDoctor }});
+//})
 
 export const updateDoctor = asyncWrapper(async (req, res) => {
   const { id } = req.params;

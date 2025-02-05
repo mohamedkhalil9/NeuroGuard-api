@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getDoctors, getDoctor, deleteDoctor, updateDoctor, getDoctorPatients, getDoctorAppointments, getDoctorPatient, getDoctorAppointment } from '../controllers/doctorController.js';
+import { getDoctors, getDoctor, deleteDoctor, updateDoctor, getDoctorPatients, getDoctorAppointments, getDoctorPatient, getDoctorAppointment, addDoctor } from '../controllers/doctorController.js';
 import { idValidator } from './../validators/validators.js';
 import ensureAuthenticated from './../middlewares/ensureAuthenticated.js';
 
@@ -12,7 +12,7 @@ router.route('/')
   // ROLES All
   .get(getDoctors)
   // ROLES Admin
-  .post()
+  .post(addDoctor)
 
 router.use(idValidator)
 router.route('/:id')
@@ -21,7 +21,9 @@ router.route('/:id')
   //.patch()
   //.delete()
 
+// get doctor's appointments 
 // ROLES Doctor, Admin
+// Validation: id is a doctor id
 router.get('/:id/patients', getDoctorPatients);
 router.get('/:id/patients/:patientId', getDoctorPatient);
 router.get('/:id/appointments', getDoctorAppointments);

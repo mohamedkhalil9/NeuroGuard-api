@@ -43,19 +43,19 @@ export const getUser = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", data: { user }});
 })
 
-export const toggleComplete = asyncWrapper(async(req, res) => {
-  const { id } = req.params;
-
-  const user = await User.findById(id);
-  if (!user) throw new ApiError(`there is no user with id ${id}`, 404);
-
-  //user = !user.completed;
-  //const updatedUser = await user.save();
-  const toggle = !user.completed;
-  const updatedUser = await User.findByIdAndUpdate(id, { completed: toggle }, { new: true });
-
-  res.status(200).json({ status: 'success', data: { updatedUser }});
-})
+//export const toggleComplete = asyncWrapper(async(req, res) => {
+//  const { id } = req.params;
+//
+//  const user = await User.findById(id);
+//  if (!user) throw new ApiError(`there is no user with id ${id}`, 404);
+//
+//  //user = !user.completed;
+//  //const updatedUser = await user.save();
+//  const toggle = !user.completed;
+//  const updatedUser = await User.findByIdAndUpdate(id, { completed: toggle }, { new: true });
+//
+//  res.status(200).json({ status: 'success', data: { updatedUser }});
+//})
 
 export const updateUser = asyncWrapper(async (req, res) => {
   const { id } = req.params;

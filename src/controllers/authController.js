@@ -59,7 +59,7 @@ const resetPassword = asyncWrapper(async (req, res) => {
   if (!user) throw new ApiError('OTP is invalid or has expired', 400);
 
   const { newPassword, confirmNewPassword } = req.body;
-  if (newPassword !== confirmNewPassword) throw new appError("password don't match")
+  if (newPassword !== confirmNewPassword) throw new ApiError("password don't match")
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   user.password = hashedPassword;
