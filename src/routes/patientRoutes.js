@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getPatients, getPatient, deletePatient, updatePatient, getPatientAppointments } from '../controllers/patientController.js'
+import { getPatients, getPatient, deletePatient, updatePatient, getPatientAppointments, getPatientAppointment } from '../controllers/patientController.js'
 import { idValidator } from './../validators/validators.js';
 import ensureAuthenticated from './../middlewares/ensureAuthenticated.js';
 
@@ -22,6 +22,6 @@ router.route('/:id')
 // get patient's appointments 
 // ROLES Patient and Admin
 router.get('/:id/appointments', getPatientAppointments)
-router.get('/:id/appointments/:appointmentId', getPatientAppointments)
+router.get('/:id/appointments/:appointmentId', getPatientAppointment)
 
 export default router;

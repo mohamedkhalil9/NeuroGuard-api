@@ -1,25 +1,42 @@
 import mongoose from 'mongoose';
 
-const AppointmentSchema = new mongoose.Schema({
-  dateOfBirth: {
-    type: Date,
-    //required: true,
+const appointmentSchema = new mongoose.Schema({
+  patient: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Patient', 
+    required: true 
   },
-  gender: {
-    type: String,
-    enum: ["Male", "Female"],
-    //required: true
+  doctor: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Doctor', 
+    required: true 
   },
-  phone: {
-    type: String,
-    //required: true,
+  date: { 
+    type: Date, 
+    required: true 
   },
-  country: String,
-  address: String,
-  googleId: String
-
+  time: { 
+    type: String, 
+    required: true 
+  }, // You can use Date if you prefer
+  status: { 
+    type: String, 
+    enum: ['scheduled', 'completed', 'cancelled'], 
+    default: 'scheduled' },
+  notes: { type: String }, // Additional notes for the appointment
+  createdAt: { type: Date, default: Date.now },
 });
 
-const Appointment = mongoose.model('Appointment', AppointmentSchema);
+//const appointmentSchema = new mongoose.Schema({
+//  patient: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
+//  doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
+//  date: { type: Date, required: true },
+//  time: { type: String, required: true }, // You can use Date if you prefer
+//  status: { type: String, enum: ['scheduled', 'completed', 'cancelled'], default: 'scheduled' },
+//  notes: { type: String }, // Additional notes for the appointment
+//  createdAt: { type: Date, default: Date.now },
+//});
+
+const Appointment = mongoose.model('Appointment', appointmentSchema);
 
 export default Appointment;

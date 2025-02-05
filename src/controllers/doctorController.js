@@ -10,6 +10,14 @@ export const getDoctorAppointments = asyncWrapper(async (req, res) => {
 
 })
 
+export const getDoctorPatient = asyncWrapper(async (req, res) => {
+
+})
+
+export const getDoctorAppointment = asyncWrapper(async (req, res) => {
+
+})
+
 
 export const getDoctors = asyncWrapper(async (req, res) => {
   // query validation ??

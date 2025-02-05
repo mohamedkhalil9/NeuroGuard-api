@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true
@@ -16,20 +16,18 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
   },
-  OTP: String,
-  otpExpire: Date,
   role: {
     type: String,
-    enum: ['patient', 'doctor', 'admin', 'amenities'],
+    enum: ['patient', 'doctor', 'admin'],
+  },
+  gender: {
+    type: String,
+    enum: ['Male', 'Female'],
+    //required: true
   },
   dateOfBirth: {
     type: Date,
     //required: true,
-  },
-  gender: {
-    type: String,
-    enum: ["Male", "Female"],
-    //required: true
   },
   phone: {
     type: String,
@@ -37,10 +35,23 @@ const UserSchema = new mongoose.Schema({
   },
   country: String,
   address: String,
-  googleId: String
-
+  OTP: String,
+  otpExpire: Date,
+  googleId: String,
+  createdAt: { type: Date, default: Date.now }
 });
 
-const User = mongoose.model('User', UserSchema);
+//const userSchema = new mongoose.Schema({
+//  username: { type: String, required: true, unique: true },
+//  password: { type: String, required: true },
+//  role: { type: String, enum: ['patient', 'doctor', 'admin'], required: true },
+//  firstName: { type: String, required: true },
+//  lastName: { type: String, required: true },
+//  email: { type: String, required: true, unique: true },
+//  phone: { type: String },
+//  createdAt: { type: Date, default: Date.now },
+//});
+
+const User = mongoose.model('User', userSchema);
 
 export default User;

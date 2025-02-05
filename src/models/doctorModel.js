@@ -1,26 +1,28 @@
 import mongoose from 'mongoose';
+import User from './userModel.js';
 
-const DoctorSchema = new mongoose.Schema({
-  dateOfBirth: {
-    type: Date,
-    //required: true,
+const doctorSchema = new mongoose.Schema({
+  user: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User', 
+    required: true 
   },
-  gender: {
-    type: String,
-    enum: ["Male", "Female"],
-    //required: true
+  specialization: { 
+    type: String, 
+    required: true 
   },
-  phone: {
-    type: String,
-    //required: true,
-  },
-  country: String,
-  address: String,
-  googleId: String
-
+  availableSlots: [{ type: Date }], // array of available time slots
 });
 
-const Doctor = mongoose.model('Doctor', DoctorSchema);
-//const Doctor = User.disc('Doctor', DoctorSchema);
+//const doctorSchema = new mongoose.Schema({
+//  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+//  specialization: { type: String, required: true },
+//  licensenumber: { type: String, required: true, unique: true },
+//  availableSlots: [{ type: Date }], // array of available time slots
+//  isAvailable: { type: Boolean, default: true },
+//});
+
+//const Doctor = mongoose.model('Doctor', doctorSchema);
+const Doctor = User.discriminator('Doctor', doctorSchema);
 
 export default Doctor;
