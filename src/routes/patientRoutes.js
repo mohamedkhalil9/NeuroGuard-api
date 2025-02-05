@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getPatients, getPatient, deletePatient, updatePatient, getPatientAppointments } from '../controllers/patientController.js'
-//import { } from './../validators/validators.js';
-import { ensureAuthenticated } from './../middlewares/ensureAuthenticated.js';
+import { idValidator } from './../validators/validators.js';
+import ensureAuthenticated from './../middlewares/ensureAuthenticated.js';
 
 const router = Router();
 
@@ -13,6 +13,7 @@ router.route('/')
   .get(getPatients)
   //.post()
 
+router.use(idValidator)
 router.route('/:id')
   .get(getPatient)
   //.patch()
@@ -21,5 +22,6 @@ router.route('/:id')
 // get patient's appointments 
 // ROLES Patient and Admin
 router.get('/:id/appointments', getPatientAppointments)
+router.get('/:id/appointments/:appointmentId', getPatientAppointments)
 
 export default router;

@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getUsers, getUser, deleteUser, updateUser, getCurrentUser } from '../controllers/userController.js';
-import { getMe } from './../controllers/userController.js';
+import { getMe, getUsers, getUser, deleteUser, updateUser } from '../controllers/userController.js';
+import { idValidator } from './../validators/validators.js';
 import ensureAuthenticated from './../middlewares/ensureAuthenticated.js';
 
 const router = Router();
@@ -14,6 +14,7 @@ router.get('/me', getMe);
 router.route('/')
   .get(getUsers)
 
+router.use(idValidator)
 router.route('/:id')
   .get(getUser)
   .patch(updateUser)

@@ -1,5 +1,5 @@
 import asyncWrapper from './../middlewares/asyncWrapper.js';
-import ApiError from './../utils/ApiError.js';
+import ApiError from './../utils/apiError.js';
 
 
 export const detection = asyncWrapper(async (req, res) => {

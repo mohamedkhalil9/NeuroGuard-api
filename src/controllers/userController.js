@@ -1,6 +1,6 @@
 import User from './../models/userModel.js';
 import asyncWrapper from './../middlewares/asyncWrapper.js';
-import ApiError from './../utils/ApiError.js';
+import ApiError from './../utils/apiError.js';
 
 export const getMe = asyncWrapper(async (req, res) => {
   const { user } = req;

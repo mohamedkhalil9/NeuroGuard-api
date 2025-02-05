@@ -20,7 +20,7 @@ const PatientSchema = new mongoose.Schema({
 
 });
 
-//const Patient = mongoose.model('Patient', PatientSchema);
+const Patient = mongoose.model('Patient', PatientSchema);
 //const Patient = User.disc('Patient', PatientSchema);
 
 export default Patient;

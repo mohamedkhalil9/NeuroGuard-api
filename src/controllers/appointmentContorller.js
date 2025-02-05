@@ -1,6 +1,6 @@
 import Appointment from './../models/appointmentModel.js';
 import asyncWrapper from './../middlewares/asyncWrapper.js';
-import ApiError from './../utils/ApiError.js';
+import ApiError from './../utils/apiError.js';
 
 
 export const getAppointments = asyncWrapper(async (req, res) => {
@@ -38,19 +38,19 @@ export const getAppointment = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", data: { appointment }});
 })
 
-export const toggleComplete = asyncWrapper(async(req, res) => {
-  const { id } = req.params;
-
-  const appointment = await Appointment.findById(id);
-  if (!appointment) throw new ApiError(`there is no appointment with id ${id}`, 404);
-
-  //appointment = !appointment.completed;
-  //const updatedAppointment = await appointment.save();
-  const toggle = !appointment.completed;
-  const updatedAppointment = await Appointment.findByIdAndUpdate(id, { completed: toggle }, { new: true });
-
-  res.status(200).json({ status: 'success', data: { updatedAppointment }});
-})
+//export const toggleComplete = asyncWrapper(async(req, res) => {
+//  const { id } = req.params;
+//
+//  const appointment = await Appointment.findById(id);
+//  if (!appointment) throw new ApiError(`there is no appointment with id ${id}`, 404);
+//
+//  //appointment = !appointment.completed;
+//  //const updatedAppointment = await appointment.save();
+//  const toggle = !appointment.completed;
+//  const updatedAppointment = await Appointment.findByIdAndUpdate(id, { completed: toggle }, { new: true });
+//
+//  res.status(200).json({ status: 'success', data: { updatedAppointment }});
+//})
 
 export const updateAppointment = asyncWrapper(async (req, res) => {
   const { id } = req.params;

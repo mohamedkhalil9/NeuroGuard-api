@@ -1,7 +1,7 @@
 import { Router } from 'express';
-//import { } from './../controllers/appointmentContorllerl.js';
-//import { } from './../validators/validators.js';
-import { ensureAuthenticated } from './../middlewares/ensureAuthenticated.js';
+import { getAppointments, addAppointment, getAppointment, updateAppointment, deleteAppointment } from './../controllers/appointmentContorller.js';
+import { idValidator } from './../validators/validators.js';
+import ensureAuthenticated from './../middlewares/ensureAuthenticated.js';
 
 const router = Router();
 
@@ -9,13 +9,14 @@ const router = Router();
 // ROLES only ADMINS
 router.use(ensureAuthenticated)
 router.route('/appointments')
-  .get(register)
-  //.post(register)
+  .get(getAppointments)
+  .post(addAppointment)
 
+router.use(idValidator)
 router.route('/appointments/:id')
-  .get(register)
-  //.patch(register)
-  //.delete(register)
+  .get(getAppointment)
+  .patch(updateAppointment)
+  .delete(deleteAppointment)
 
 
 export default router;
