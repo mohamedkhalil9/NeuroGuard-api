@@ -28,12 +28,44 @@ router.post('/predict', prediction)
 
 /**
 * @openapi
-* '/api/v1/stroke/chat':
+* '/api/v1/stroke/chats/':
 *  post:
 *     tags:
 *     - Stroke 
-*     summary: Stroke Chatbot 
+*     summary: Create New Chat 
 */
-router.post('/chat', chatbot)
+router.get('/chats', chatbot)
+
+
+/**
+* @openapi
+* '/api/v1/stroke/chats':
+*  get:
+*     tags:
+*     - Stroke 
+*     summary: Get Stroke Chatbot All Chats
+*/
+router.get('/chats', chatbot)
+
+/**
+* @openapi
+* '/api/v1/stroke/chats/:id':
+*  post:
+*     tags:
+*     - Stroke 
+*     summary: Chat with chatbot 
+*/
+router.post('/chats/:id', chatbot)
+
+/**
+* @openapi
+* '/api/v1/stroke/chats/:id':
+*  get:
+*     tags:
+*     - Stroke 
+*     summary: Get Stroke Chatbot single Chat
+*/
+router.get('/chats/:id', chatbot)
+
 
 export default router;

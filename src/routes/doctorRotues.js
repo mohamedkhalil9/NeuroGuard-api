@@ -67,7 +67,7 @@ router.route('/profile')
 /**
  * @openapi
  * '/api/v1/doctors/appointments/':
- *  post:
+ *  get:
  *     tags:
  *     - Doctors 
  *     summary: Get Doctor's Appointments
@@ -76,7 +76,7 @@ router.get('/appointments', getDoctorAppointments);
 /**
  * @openapi
  * '/api/v1/doctors/appointments/:appointmentId':
- *  post:
+ *  get:
  *     tags:
  *     - Doctors 
  *     summary: Get Doctor's single Appointment
@@ -85,7 +85,7 @@ router.get('/appointments/:appointmentId', getDoctorAppointment);
 /**
  * @openapi
  * '/api/v1/doctors/patients/':
- *  post:
+ *  get:
  *     tags:
  *     - Doctors 
  *     summary: Get Doctor's Patients 
@@ -94,7 +94,7 @@ router.get('/patients', getDoctorPatients);
 /**
  * @openapi
  * '/api/v1/doctors/patients/:patientId':
- *  post:
+ *  get:
  *     tags:
  *     - Doctors 
  *     summary: Get Doctor's single Patient 

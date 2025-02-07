@@ -7,9 +7,9 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get('/', getUsers)
+//router.get('/', getUsers)
 /**
- * @openapi
+ * openapi
  * '/api/v1/users/:userId':
  *  get:
  *     tags:
@@ -30,12 +30,12 @@ router.get('/', getUsers)
  *      500:
  *        description: Server Error
  */
-router.get('/:id', idValidator, getUser)
+//router.get('/:id', idValidator, getUser)
 
 router.route('/profile')
   .get(getUserProfile)
 /**
- * @openapi
+ * openapi
  * '/api/v1/users/:id':
  *  patch:
  *     tags:
@@ -71,7 +71,7 @@ router.route('/profile')
  */
   .patch(updateUserProfile)
 /**
- * @openapi
+ * openapi
  * '/api/v1/users/{userId}':
  *  delete:
  *     tags:

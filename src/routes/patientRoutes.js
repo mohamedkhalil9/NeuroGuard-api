@@ -57,7 +57,7 @@ router.post('/appointments', getPatientAppointments)
 /**
  * @openapi
  * '/api/v1/patients/appointments':
- *  post:
+ *  get:
  *     tags:
  *     - Patients 
  *     summary: Get Patient's Appointments
@@ -66,7 +66,7 @@ router.get('/appointments', getPatientAppointments)
 /**
  * @openapi
  * '/api/v1/patients/appointments/:appointmentId':
- *  post:
+ *  get:
  *     tags:
  *     - Patients 
  *     summary: Get Patient's single Appointment

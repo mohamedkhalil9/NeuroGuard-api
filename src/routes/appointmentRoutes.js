@@ -8,7 +8,7 @@ const router = Router();
 router.use(authenticate)
 
 /**
-* @openapi
+* openapi
 * '/api/v1/appointments/':
 *  get:
 *     tags:
@@ -18,7 +18,7 @@ router.use(authenticate)
 router.get('/', getAppointments)
 
 /**
-* @openapi
+* openapi
 * '/api/v1/appointments/:id':
 *  get:
 *     tags:

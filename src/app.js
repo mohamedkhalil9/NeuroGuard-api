@@ -29,6 +29,7 @@ app.use(session({
 }))
 
 // Multer
+// Cloudinary
 // Stripe - PayPal -> any other?
 // XSS - CSRF (cros site something) 'security'
 // WINSTON (logger)

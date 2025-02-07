@@ -43,7 +43,7 @@ router.post('/login', loginValidator, passport.authenticate('local'), login)
 /**
  * @openapi
  * '/api/v1/auth/google':
- *  post:
+ *  get:
  *     tags:
  *     - Auth 
  *     summary: Login or Register a user with google
@@ -56,7 +56,7 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
 /**
  * @openapi
  * '/api/v1/auth/logout':
- *  post:
+ *  get:
  *     tags:
  *     - Auth 
  *     summary: Lougout user
@@ -68,8 +68,43 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
  */
 router.get('/logout', logout)
 
+/**
+ * @openapi
+ * '/api/v1/auth/forgot-password':
+ *  post:
+ *    tags:
+ *    - Auth
+ *    summary: Email the user with otp
+ *    responses:
+ *     200:
+ *       description: Success
+ */
 router.post('/forgot-password', emailValidator, forgotPassword)
+
+/**
+ * @openapi
+ * '/api/v1/auth/verify-otp':
+ *  post:
+ *    tags:
+ *    - Auth
+ *    summary: Verify the sent otp
+ *    responses:
+ *     200:
+ *       description: Success
+ */
 router.post('/verify-otp', otpValidator, verifyOtp)
+
+/**
+ * @openapi
+ * '/api/v1/auth/reset-password':
+ *  patch:
+ *    tags:
+ *    - Auth
+ *    summary: Reset user's password 
+ *    responses:
+ *     200:
+ *       description: Success
+ */
 router.patch('/reset-password/', resetPassword)
 
 export default router;
