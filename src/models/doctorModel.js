@@ -43,9 +43,11 @@ const doctorSchema = new mongoose.Schema({
 
   specialization: { 
     type: String, 
-    required: true 
+    //required: true 
   },
   availableSlots: [{ type: Date }], // array of available time slots
+  appointmentFee: Number,
+  //slug
 });
 
 //const doctorSchema = new mongoose.Schema({

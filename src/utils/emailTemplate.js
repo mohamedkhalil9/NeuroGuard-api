@@ -1,4 +1,4 @@
-export const emailTemplate = (otp) => {`<!doctype html>
+export const emailTemplate = (otp) => {return `<!doctype html>
 <html lang="en" >
 <head>
   <meta charset="utf-8">

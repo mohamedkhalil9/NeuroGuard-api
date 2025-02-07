@@ -49,7 +49,7 @@ router.get('/chats', chatbot)
 
 /**
 * @openapi
-* '/api/v1/stroke/chats/:id':
+* '/api/v1/stroke/chats/{id}':
 *  post:
 *     tags:
 *     - Stroke 
@@ -59,7 +59,7 @@ router.post('/chats/:id', chatbot)
 
 /**
 * @openapi
-* '/api/v1/stroke/chats/:id':
+* '/api/v1/stroke/chats/{id}':
 *  get:
 *     tags:
 *     - Stroke 

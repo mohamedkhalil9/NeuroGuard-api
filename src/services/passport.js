@@ -26,7 +26,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, passwor
     const user = await User.findOne({ email });
     if (!user) throw new ApiError('ivalid email or password', 401);
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = bcrypt.compare(password, user.password);
     if (!isMatch) throw new ApiError('ivalid email or password', 401);
 
     done(null, user)

@@ -4,49 +4,42 @@ import { emailValidator, loginValidator, otpValidator } from './../validators/va
 import passport from 'passport';
 
 const router = Router();
-
+ 
 /**
- * @openapi
- * '/api/v1/auth/login':
- *  post:
- *     tags:
- *     - Auth 
- *     summary: Login as a user
+ * @swagger
+ * /api/v1/auth/login:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Login Users
  *     requestBody:
- *      required: true
- *      content:
- *        application/json:
- *           schema:
- *            type: object
- *            required:
- *              - email 
- *              - password
- *            properties:
- *              email:
- *                type: string
- *                default: johndoe@email.com
- *              password:
- *                type: string
- *                default: johnDoe20!@
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Login'
  *     responses:
- *      200:
- *        description: Success 
- *      401:
- *        description: Unauthorized 
- *      404:
- *        description: Not Found
- *      500:
- *        description: Server Error
+ *       200:
+ *         description: User Logged in Successfully 
+ *       404:
+ *         description: User Not Found 
+ *       401:
+ *         description: Invalid Email Or Password 
+ *       500:
+ *         description: Server Error
  */
 router.post('/login', loginValidator, passport.authenticate('local'), login)
 
 /**
- * @openapi
- * '/api/v1/auth/google':
- *  get:
- *     tags:
- *     - Auth 
+ * @swagger
+ * /api/v1/auth/google:
+ *   get:
+ *     tags: [Auth]
  *     summary: Login or Register a user with google
+ *     responses:
+ *       200:
+ *         description: User Logged in Successfully 
+ *       500:
+ *         description: Server Error
  */
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: false }), (req, res) => {
@@ -54,57 +47,139 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
 })
 
 /**
- * @openapi
- * '/api/v1/auth/logout':
- *  get:
- *     tags:
- *     - Auth 
- *     summary: Lougout user
+ * @swagger
+ * /api/v1/auth/logout:
+ *   get:
+ *     tags: [Auth]
+ *     summary: User Logout 
  *     responses:
- *      204:
- *        description: Loged out 
- *      500:
- *        description: Server Error
+ *       200:
+ *         description: Logged out Successfully 
+ *       500:
+ *         description: Server Error
  */
 router.get('/logout', logout)
 
 /**
- * @openapi
- * '/api/v1/auth/forgot-password':
- *  post:
- *    tags:
- *    - Auth
- *    summary: Email the user with otp
- *    responses:
- *     200:
- *       description: Success
+ * @swagger
+ * /api/v1/auth/forgot-password:
+ *   post:
+ *     tags: [Auth]
+ *     summary: User Forgot Password 
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              required:
+ *                - email
+ *              properties:
+ *                email: 
+ *                  type: string
+ *                  default: someemail@mail.com
+ *     responses:
+ *       200:
+ *         description: Email sent with otp Successfully 
+ *       404:
+ *         description: User Not Found 
+ *       500:
+ *         description: Server Error
  */
 router.post('/forgot-password', emailValidator, forgotPassword)
-
+  
 /**
- * @openapi
- * '/api/v1/auth/verify-otp':
- *  post:
- *    tags:
- *    - Auth
- *    summary: Verify the sent otp
- *    responses:
- *     200:
- *       description: Success
+ * @swagger
+ * /api/v1/auth/verify-otp:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Verify the sent otp
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              required:
+ *                - email
+ *                - otp 
+ *              properties:
+ *                email: 
+ *                  type: string
+ *                  default: username@email.com
+ *                otp:
+ *                  type: string
+ *                  default: 1234 
+ *     responses:
+ *       200:
+ *         description: otp verified Successfully 
+ *       409:
+ *         description: Otp is invalid
+ *       500:
+ *         description: Server Error
  */
 router.post('/verify-otp', otpValidator, verifyOtp)
 
 /**
- * @openapi
- * '/api/v1/auth/reset-password':
- *  patch:
- *    tags:
- *    - Auth
- *    summary: Reset user's password 
- *    responses:
- *     200:
- *       description: Success
+ * @swagger
+ * /api/v1/auth/reset-password:
+ *   patch:
+ *     tags: [Auth]
+ *     summary: Reset User's Password 
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              required:
+ *                - email 
+ *                - newPassword
+ *                - confirmNewPassword
+ *              properties:
+ *                email: 
+ *                  type: string
+ *                  default: someemail@mail.com 
+ *                newPassword: 
+ *                  type: string
+ *                  default: d2341
+ *                confirmNewPassword: 
+ *                  type: string
+ *                  default: s2342s
+ *     responses:
+ *       200:
+ *         description: Password updated Successfully 
+ *       400:
+ *         description: access denied otp is not verified 
+ *       500:
+ *         description: Server Error
  */
-router.patch('/reset-password/', resetPassword)
+router.patch('/reset-password', resetPassword)
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Login:
+ *       type: object
+ *       required:
+ *         - email 
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *       example:
+ *         email: ahmedmahmoud4@email.com 
+ *         password: '1234'
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Auth 
+ */
+
 
 export default router;

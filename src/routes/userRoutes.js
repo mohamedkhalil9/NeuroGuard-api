@@ -10,7 +10,7 @@ router.use(authenticate);
 //router.get('/', getUsers)
 /**
  * openapi
- * '/api/v1/users/:userId':
+ * '/api/v1/users/{userId}':
  *  get:
  *     tags:
  *     - Users
@@ -35,39 +35,29 @@ router.use(authenticate);
 router.route('/profile')
   .get(getUserProfile)
 /**
- * openapi
- * '/api/v1/users/:id':
+ * @swagger
+ * /api/v1/users/profile:
  *  patch:
- *     tags:
- *     - Users 
- *     summary: Modify a user
- *     requestBody:
+ *    summary: Update
+ *    tags:
+ *    - Users
+ *    requestBody:
  *      required: true
  *      content:
  *        application/json:
- *           schema:
- *            type: object
- *            required:
- *              - userId
- *            properties:
- *              userId:
- *                type: string
- *                default: ''
- *              firstName:
- *                type: string
- *                default: ''
- *              lastName:
- *                type: string
- *                default: ''
- *     responses:
+ *          schema:
+ *            $ref: '#/components/schemas/Patient'
+ *    responses:
  *      200:
- *        description: Modified
- *      400:
- *        description: Bad Request
+ *        description: The book was updated
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Patient'
  *      404:
- *        description: Not Found
+ *        description: The book was not found
  *      500:
- *        description: Server Error
+ *        description: Some error happened
  */
   .patch(updateUserProfile)
 /**

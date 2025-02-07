@@ -60,6 +60,7 @@ app.use(helmet());
 app.use(passport.initialize());
 app.use(passport.session());
 
+// COMPONENT SCHEMAS
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(spec));
 app.use('/api/v1', appRouter);
 

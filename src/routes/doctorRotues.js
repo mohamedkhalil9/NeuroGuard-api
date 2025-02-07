@@ -6,14 +6,26 @@ import { authenticate } from '../controllers/authController.js'
 const router = Router();
 
 /**
- * @openapi
- * '/api/v1/doctors':
- *  post:
- *     tags:
- *     - Doctors 
+ * @swagger
+ * /api/v1/doctors/register:
+ *   post:
+ *     tags: [Doctors]
  *     summary: Register Doctors 
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Doctor'
+ *     responses:
+ *       201:
+ *         description: Doctor Created Successfully 
+ *       409:
+ *         description: User Already Exists 
+ *       500:
+ *         description: Server Error
  */
-router.post('/', registerValidator, registerDoctor)
+router.post('/register', registerValidator, registerDoctor)
 
 router.use(authenticate)
 /**
@@ -27,7 +39,7 @@ router.use(authenticate)
 router.get('/', getDoctors)
 /**
 * @openapi
-* '/api/v1/doctors/:id':
+* '/api/v1/doctors/{id}':
 *  get:
 *     tags:
 *     - Doctors
@@ -75,7 +87,7 @@ router.route('/profile')
 router.get('/appointments', getDoctorAppointments);
 /**
  * @openapi
- * '/api/v1/doctors/appointments/:appointmentId':
+ * '/api/v1/doctors/appointments/{appointmentId}':
  *  get:
  *     tags:
  *     - Doctors 
@@ -93,12 +105,63 @@ router.get('/appointments/:appointmentId', getDoctorAppointment);
 router.get('/patients', getDoctorPatients);
 /**
  * @openapi
- * '/api/v1/doctors/patients/:patientId':
+ * '/api/v1/doctors/patients/{patientId}':
  *  get:
  *     tags:
  *     - Doctors 
  *     summary: Get Doctor's single Patient 
  */
 router.get('/patients/:patientId', getDoctorPatient);
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Doctor:
+ *       type: object
+ *       required:
+ *         - firstName
+ *         - lastName
+ *         - email 
+ *         - password
+ *         - dateOfBirth
+ *         - gender
+ *         - phone
+ *         - country
+ *         - address
+ *       properties:
+ *         firstName:
+ *           type: string
+ *         lastName:
+ *           type: string
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *         dateOfBirth: 
+ *           type: string
+ *           format: date 
+ *         gender:
+ *           type: string
+ *         phone:
+ *           type: string
+ *         country:
+ *           type: string
+ *       example:
+ *         firstName: Ahmed
+ *         lastName: Mahmoud
+ *         email: ahmedmahmoud4@email.com 
+ *         password: '1234'
+ *         dateOfBirth: 2000-10-10 
+ *         gender: Male
+ *         phone: 010001000
+ *         country: egypt
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Doctors 
+ */
 
 export default router;

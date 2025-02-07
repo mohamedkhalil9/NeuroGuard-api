@@ -19,15 +19,14 @@ export const authenticate = (req, res, next) => {
     return next()
   }
 
-  new ApiError('access denied', 403) 
-  return next();
+  return next(new ApiError('access denied', 403));
 }
 
 export const logout = asyncWrapper(async (req, res) => {
   req.logout((err) => {
     if (err) throw new ApiError(err.message, 500);
 
-    res.sendStatus(204)
+    res.sendStatus(200)
   })
 })
 
@@ -52,23 +51,25 @@ export const verifyOtp = asyncWrapper(async (req, res) => {
   const { otp, email } = req.body;
 
   const user = await User.findOne({ email });
-  const isMatch = await bcrypt.compare(otp, user.otp)
+  const isMatch = bcrypt.compare(otp, user.otp)
 
   if (user.otpExpire < Date.now() || !isMatch ) throw new ApiError('OTP code is not valid', 409)
 
+  user.otpVerifed = true;
+  await user.save()
   // db verifed => true
   res.status(200).json({ status: 'success', data: null });
 })
 
 export const resetPassword = asyncWrapper(async (req, res) => {
-  //const { OTP } = req.params;
-  // Check verifed true
+  const { email, newPassword, confirmNewPassword } = req.body;
 
-  const user = await User.findOne({ OTP , otpExpire: {$gt: Date.now()}});
-  if (!user) throw new ApiError('OTP is invalid or has expired', 400);
+  if (newPassword !== confirmNewPassword) throw new ApiError("password don't match", 409)
 
-  const { newPassword, confirmNewPassword } = req.body;
-  if (newPassword !== confirmNewPassword) throw new ApiError("password don't match")
+  const user = await User.findOne({ email });
+  if (!user) throw new ApiError('user not found', 404);
+
+  if (user.otpVerifed == false) throw new ApiError('access denied otp is not verifed', 403)
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   user.password = hashedPassword;

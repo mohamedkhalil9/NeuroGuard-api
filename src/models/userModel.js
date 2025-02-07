@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['patient', 'doctor', 'admin'],
   },
+  __t: { type: String, default: 'User' },
   gender: {
     type: String,
     enum: ['Male', 'Female'],
@@ -37,6 +38,7 @@ const userSchema = new mongoose.Schema({
   address: String,
   otp: String,
   otpExpire: Date,
+  otpVerifed: Boolean,
   googleId: String,
   createdAt: { type: Date, default: Date.now }
 });

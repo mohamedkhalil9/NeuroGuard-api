@@ -1,16 +1,18 @@
+import User from '../models/userModel.js'
 import Doctor from './../models/doctorModel.js';
 import Appointment from './../models/appointmentModel.js';
 import asyncWrapper from './../middlewares/asyncWrapper.js';
 import ApiError from './../utils/apiError.js';
+import bcrypt from 'bcrypt';
 
 export const registerDoctor = asyncWrapper(async (req, res) => {
   const { firstName, lastName, email, password, role, dateOfBirth, gender, phone, country, address } = req.body;
 
-  const doctor = await Doctor.findOne({ email: email });
-  if (doctor) throw new ApiError("user aleardy existed", 409);
+  const user = await User.findOne({ email: email });
+  if (user) throw new ApiError("email aleardy existed", 409);
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newDoctor = await User.create({ firstName, lastName, email, password: hashedPassword, role, dateOfBirth, gender, phone, country, address });
+  const newDoctor = await Doctor.create({ firstName, lastName, email, password: hashedPassword, role: 'doctor', dateOfBirth, gender, phone, country, address });
 
   res.status(201).json({ status: "success", data: newDoctor });
 })
@@ -27,8 +29,8 @@ export const getDoctorAppointment = asyncWrapper(async (req, res) => {
   const { id } = req.user._id;
   const { appointmentId } = req.params;
 
-  // Could be User.find() also => discriminator: same document
-  //const patient = await User.findById(id);
+  // Could be Doctor.find() also => discriminator: same document
+  //const patient = await Doctor.findById(id);
   const doctor = await Doctor.findById(id);
   if (!doctor || doctor.role !== 'doctor') throw new ApiError('doctor not found', 404)
 
@@ -51,8 +53,8 @@ export const getDoctorPatient = asyncWrapper(async (req, res) => {
   const { id } = req.user._id;
   const { appointmentId } = req.params;
 
-  // Could be User.find() also => discriminator: same document
-  //const patient = await User.findById(id);
+  // Could be Doctor.find() also => discriminator: same document
+  //const patient = await Doctor.findById(id);
   const doctor = await Doctor.findById(id);
   if (!doctor || doctor.role !== 'doctor') throw new ApiError('doctor not found', 404)
 
@@ -91,8 +93,8 @@ export const getDoctor = asyncWrapper(async (req, res) => {
 })
 
 export const getDoctorProfile = asyncWrapper(async (req, res) => {
-  const { user } = req;
-  res.status(200).json({ status: "success", data: {user} });
+  const { doctor } = req;
+  res.status(200).json({ status: "success", data: {doctor} });
 })
 
 export const updateDoctorProfile = asyncWrapper(async (req, res) => {

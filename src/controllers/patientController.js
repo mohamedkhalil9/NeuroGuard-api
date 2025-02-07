@@ -2,13 +2,15 @@ import Patient from './../models/patientModel.js';
 import Appointment from './../models/appointmentModel.js';
 import asyncWrapper from './../middlewares/asyncWrapper.js';
 import ApiError from './../utils/apiError.js';
+import bcrypt from 'bcrypt';
 
 export const registerPatient = asyncWrapper(async (req, res) => {
   const { firstName, lastName, email, password, role, dateOfBirth, gender, phone, country, address } = req.body;
 
-  const patient = await Patient.findOne({ email: email });
-  if (patient) throw new ApiError("user aleardy existed", 409);
+  const user = await Patient.findOne({ email: email });
+  if (user) throw new ApiError("email aleardy existed", 409);
 
+  console.log(req.body)
   // Mongoose Middleware pre save
   const hashedPassword = await bcrypt.hash(password, 10);
   const newPatient = await Patient.create({ firstName, lastName, email, password: hashedPassword, role: 'patient', dateOfBirth, gender, phone, country, address });
