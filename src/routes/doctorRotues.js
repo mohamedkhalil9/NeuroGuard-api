@@ -27,7 +27,9 @@ const router = Router();
  */
 router.post('/register', registerValidator, registerDoctor)
 
+
 router.use(authenticate)
+
 /**
 * @openapi
 * '/api/v1/doctors/':
@@ -48,68 +50,119 @@ router.get('/', getDoctors)
 router.get('/:id', idValidator, getDoctor)
 
 router.route('/profile')
-/**
- * @openapi
- * '/api/v1/doctors/profile':
- *  get:
- *     tags:
- *     - Doctors
- *     summary: Get Doctor Profile
- */
-  .get(getDoctorProfile)
-/**
- * @openapi
- * '/api/v1/doctors/profile':
- *  patch:
- *     tags:
- *     - Doctors 
- *     summary: Update Doctor Profile
- */
-  .patch(updateDoctorProfile)
-/**
-* @openapi
-* '/api/v1/doctors/profile':
-*  delete:
-*     tags:
-*     - Doctors 
-*     summary: Delete Doctor Profile
-*/
-  .delete(deleteDoctorProfile)
 
 /**
- * @openapi
- * '/api/v1/doctors/appointments/':
- *  get:
- *     tags:
- *     - Doctors 
- *     summary: Get Doctor's Appointments
+ * @swagger
+ * /api/v1/doctors/profile:
+ *   get:
+ *     tags: [Doctors]
+ *     summary: Get Doctor Profile
+ *     responses:
+ *       200:
+ *         description: Success 
+ *       403:
+ *         description: Access Denied please Login 
+ */
+  .get(getDoctorProfile)
+ /**
+ * @swagger
+ * /api/v1/doctors/profile:
+ *   patch:
+ *     tags: [Doctors]
+ *     summary: Update Doctor Profile
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Doctor'
+ *     responses:
+ *       200:
+ *         description: Successfully Updated Doctor Profile 
+ *       500:
+ *         description: Server Error 
+ */
+
+  .patch(updateDoctorProfile)
+
+/**
+ * @swagger
+ * /api/v1/doctors/profile:
+ *   delete:
+ *     tags: [Doctors]
+ *     summary: Delete Doctor Profile
+ *     responses:
+ *       200:
+ *         description: Successfully Deleted Doctor Profile 
+ *       500:
+ *         description: Server Error 
+ */
+  .delete(deleteDoctorProfile)
+
+
+/**
+ * @swagger
+ * /api/v1/doctors/appointments:
+ *   get:
+ *     tags: [Doctors]
+ *     summary: Get Doctor Appointments
+ *     responses:
+ *       200:
+ *         description: Success 
+ *       500:
+ *         description: Server Error
  */
 router.get('/appointments', getDoctorAppointments);
+
 /**
- * @openapi
- * '/api/v1/doctors/appointments/{appointmentId}':
- *  get:
- *     tags:
- *     - Doctors 
- *     summary: Get Doctor's single Appointment
+ * @swagger
+ * /api/v1/doctors/appointments/{appointmentId}:
+ *   get:
+ *     tags: [Doctors]
+ *     summary: Get Doctor single Appointment
+ *     parameters:
+ *       - name: appointmentId
+ *       in: path
+ *       required: true
+ *     responses:
+ *       200:
+ *         description: Success 
+ *       500:
+ *         description: Server Error
  */
+
 router.get('/appointments/:appointmentId', getDoctorAppointment);
+
 /**
- * @openapi
- * '/api/v1/doctors/patients/':
- *  get:
- *     tags:
- *     - Doctors 
- *     summary: Get Doctor's Patients 
+ * @swagger
+ * /api/v1/doctors/patients:
+ *   get:
+ *     tags: [Doctors]
+ *     summary: Get Doctor patients 
+ *     responses:
+ *       200:
+ *         description: Success 
+ *       500:
+ *         description: Server Error
  */
+
 router.get('/patients', getDoctorPatients);
+
 /**
- * @openapi
- * '/api/v1/doctors/patients/{patientId}':
- *  get:
- *     tags:
- *     - Doctors 
- *     summary: Get Doctor's single Patient 
+ * @swagger
+ * /api/v1/doctors/patients/{patientId}:
+ *   get:
+ *     tags: [Doctors]
+ *     summary: Get Doctor single Patient
+ *     parameters:
+ *       - name: patientId 
+ *       in: path
+ *       required: true
+ *     responses:
+ *       200:
+ *         description: Success 
+ *       500:
+ *         description: Server Error
  */
 router.get('/patients/:patientId', getDoctorPatient);
 

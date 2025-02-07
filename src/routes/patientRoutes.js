@@ -43,49 +43,89 @@ router.route('/profile')
  */
   .get(getPatientProfile)
 /**
- * @openapi
- * '/api/v1/patients/profile':
- *  patch:
- *     tags:
- *     - Patients 
+ * @swagger
+ * /api/v1/patients/profile:
+ *   patch:
+ *     tags: [Patients]
  *     summary: Update Patient Profile
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Patient'
+ *     responses:
+ *       200:
+ *         description: Successfully Updated User Profile 
+ *       500:
+ *         description: Server Error 
  */
   .patch(updatePatientProfile)
 /**
-* @openapi
-* '/api/v1/patients/profile':
-*  delete:
-*     tags:
-*     - Patients 
-*     summary: Delete Patient Profile
-*/
+ * @swagger
+ * /api/v1/patients/profile:
+ *   delete:
+ *     tags: [Patients]
+ *     summary: Delete Patient Profile
+ *     responses:
+ *       200:
+ *         description: Successfully Deleted User Profile 
+ *       500:
+ *         description: Server Error 
+ */
   .delete(deletePatientProfile)
 
 /**
- * @openapi
- * '/api/v1/patients/appointments':
- *  post:
- *     tags:
- *     - Patients 
- *     summary: Create Appointment
+ * @swagger
+ * /api/v1/patients/appointments:
+ *   post:
+ *     tags: [Patients]
+ *     summary: Book New Appointment 
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Appointment'
+ *     responses:
+ *       201:
+ *         description: Appointment Created Successfully 
+ *       500:
+ *         description: Server Error
  */
+
 router.post('/appointments', getPatientAppointments)
+
 /**
- * @openapi
- * '/api/v1/patients/appointments':
- *  get:
- *     tags:
- *     - Patients 
- *     summary: Get Patient's Appointments
+ * @swagger
+ * /api/v1/patients/appointments:
+ *   get:
+ *     tags: [Patients]
+ *     summary: Get Patient Appointments
+ *     responses:
+ *       200:
+ *         description: Success 
+ *       500:
+ *         description: Server Error
  */
+
 router.get('/appointments', getPatientAppointments)
+
 /**
- * @openapi
- * '/api/v1/patients/appointments/{appointmentId}':
- *  get:
- *     tags:
- *     - Patients 
- *     summary: Get Patient's single Appointment
+ * @swagger
+ * /api/v1/patients/appointments/{appointmentId}:
+ *   get:
+ *     tags: [Patients]
+ *     summary: Get Patient single Appointment
+ *     parameters:
+ *       - name: appointmentId
+ *       in: path
+ *       required: true
+ *     responses:
+ *       200:
+ *         description: Success 
+ *       500:
+ *         description: Server Error
  */
 router.get('/appointments/:appointmentId', getPatientAppointment)
 /**
@@ -142,6 +182,38 @@ router.post('/appointments/:appointmentId/pay')
  *         phone: 010001000
  *         country: egypt
  */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Appointment:
+ *       type: object
+ *       required:
+ *         - date 
+ *         - time 
+ *         - patient 
+ *         - doctor 
+ *       properties:
+ *         date:
+ *           type: string
+ *           format: date
+ *         time:
+ *           type: string
+ *         patientId:
+ *           type: string
+ *         doctorId:
+ *           type: string
+ *         notes:
+ *           type: string
+ *       example:
+ *         date:
+ *         time:
+ *         patientId:
+ *         doctorId:
+ *         notes:
+ */
+
 
 /**
  * @swagger
