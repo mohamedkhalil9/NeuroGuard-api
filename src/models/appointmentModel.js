@@ -1,6 +1,16 @@
 import mongoose from 'mongoose';
 
 const appointmentSchema = new mongoose.Schema({
+  date: { 
+    type: Date, 
+    required: true 
+  },
+  time: { 
+    type: String, 
+    required: true 
+  }, // You can use Date if you prefer
+  notes: { type: String }, // Additional notes for the appointment
+
   patient: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Patient', 
@@ -11,19 +21,12 @@ const appointmentSchema = new mongoose.Schema({
     ref: 'Doctor', 
     required: true 
   },
-  date: { 
-    type: Date, 
-    required: true 
-  },
-  time: { 
-    type: String, 
-    required: true 
-  }, // You can use Date if you prefer
+
   status: { 
     type: String, 
     enum: ['scheduled', 'completed', 'cancelled'], 
     default: 'scheduled' },
-  notes: { type: String }, // Additional notes for the appointment
+
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -3,8 +3,21 @@ import Appointment from './../models/appointmentModel.js';
 import asyncWrapper from './../middlewares/asyncWrapper.js';
 import ApiError from './../utils/apiError.js';
 
+export const registerPatient = asyncWrapper(async (req, res) => {
+  const { firstName, lastName, email, password, role, dateOfBirth, gender, phone, country, address } = req.body;
+
+  const patient = await Patient.findOne({ email: email });
+  if (patient) throw new ApiError("user aleardy existed", 409);
+
+  // Mongoose Middleware pre save
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newPatient = await Patient.create({ firstName, lastName, email, password: hashedPassword, role: 'patient', dateOfBirth, gender, phone, country, address });
+
+  res.status(201).json({ status: "success", data: newPatient });
+})
+
 export const getPatientAppointments = asyncWrapper(async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.user._id;
 
   const appointments = await Appointment.find({ patient: id })
     .populate('doctor', 'firstName lastName specialization') // Populate doctor details
@@ -14,7 +27,8 @@ export const getPatientAppointments = asyncWrapper(async (req, res) => {
 });
 
 export const getPatientAppointment = asyncWrapper(async (req, res) => {
-  const { id, appointmentId } = req.params;
+  const { id } = req.user._id;
+  const { appointmentId } = req.params;
 
   // Could be User.find() also => discriminator: same document
   //const patient = await User.findById(id);
@@ -48,15 +62,6 @@ export const getPatients = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", results: patients.length, data: { patients }});
 })
 
-export const addPatient = asyncWrapper(async(req, res) => {
-  const { title, description, estimated } = req.body;
-  //const patient = await Patient.create({ title, description, completed: false });
-  const patient = await Patient.create({ title, description, estimated });
-
-  res.status(201).json({ status: 'success', data: { patient }});
-  //res.status(201).json({ status: 'success', data: patient });
-})
-
 export const getPatient = asyncWrapper(async (req, res) => {
   const { id } = req.params;
   const patient = await Patient.findById(id);
@@ -64,22 +69,13 @@ export const getPatient = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", data: { patient }});
 })
 
-//export const toggleComplete = asyncWrapper(async(req, res) => {
-//  const { id } = req.params;
-//
-//  const patient = await Patient.findById(id);
-//  if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
-//
-//  //patient = !patient.completed;
-//  //const updatedPatient = await patient.save();
-//  const toggle = !patient.completed;
-//  const updatedPatient = await Patient.findByIdAndUpdate(id, { completed: toggle }, { new: true });
-//
-//  res.status(200).json({ status: 'success', data: { updatedPatient }});
-//})
+export const getPatientProfile = asyncWrapper(async (req, res) => {
+  const { user } = req;
+  res.status(200).json({ status: "success", data: {user} });
+})
 
-export const updatePatient = asyncWrapper(async (req, res) => {
-  const { id } = req.params;
+export const updatePatientProfile = asyncWrapper(async (req, res) => {
+  const id = req.user._id;
   const { title, description, estimated } = req.body;
 
   const patient = await Patient.findById(id);
@@ -91,8 +87,8 @@ export const updatePatient = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", data: { updatedPatient }});
 })
 
-export const deletePatient = asyncWrapper(async (req, res) => {
-  const { id } = req.params;
+export const deletePatientProfile = asyncWrapper(async (req, res) => {
+  const id = req.user._id;
   const patient = await Patient.findByIdAndDelete(id);
   if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
   res.status(200).json({ status: "success", data: null });

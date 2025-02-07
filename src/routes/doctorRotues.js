@@ -1,32 +1,104 @@
 import { Router } from 'express';
-import { getDoctors, getDoctor, deleteDoctor, updateDoctor, getDoctorPatients, getDoctorAppointments, getDoctorPatient, getDoctorAppointment, addDoctor } from '../controllers/doctorController.js';
-import { idValidator } from './../validators/validators.js';
-import ensureAuthenticated from './../middlewares/ensureAuthenticated.js';
+import { getDoctors, getDoctor, getDoctorPatients, getDoctorAppointments, getDoctorPatient, getDoctorAppointment, registerDoctor, getDoctorProfile, updateDoctorProfile, deleteDoctorProfile } from '../controllers/doctorController.js';
+import { registerValidator, idValidator } from './../validators/validators.js';
+import { authenticate } from '../controllers/authController.js'
 
 const router = Router();
 
-// Protected
-// ROLES 
-router.use(ensureAuthenticated)
-router.route('/')
-  // ROLES All
-  .get(getDoctors)
-  // ROLES Admin
-  .post(addDoctor)
+/**
+ * @openapi
+ * '/api/v1/doctors':
+ *  post:
+ *     tags:
+ *     - Doctors 
+ *     summary: Register Doctors 
+ */
+router.post('/', registerValidator, registerDoctor)
 
-router.use(idValidator)
-router.route('/:id')
-  // all ROLES
-  .get(getDoctor)
-  //.patch()
-  //.delete()
+router.use(authenticate)
+/**
+* @openapi
+* '/api/v1/doctors/':
+*  get:
+*     tags:
+*     - Doctors
+*     summary: Get All Doctors
+*/
+router.get('/', getDoctors)
+/**
+* @openapi
+* '/api/v1/doctors/:id':
+*  get:
+*     tags:
+*     - Doctors
+*     summary: Get single Doctors
+*/
+router.get('/:id', idValidator, getDoctor)
 
-// get doctor's appointments 
-// ROLES Doctor, Admin
-// Validation: id is a doctor id
-router.get('/:id/patients', getDoctorPatients);
-router.get('/:id/patients/:patientId', getDoctorPatient);
-router.get('/:id/appointments', getDoctorAppointments);
-router.get('/:id/appointments/:appointmentId', getDoctorAppointment);
+router.route('/profile')
+/**
+ * @openapi
+ * '/api/v1/doctors/profile':
+ *  get:
+ *     tags:
+ *     - Doctors
+ *     summary: Get Doctor Profile
+ */
+  .get(getDoctorProfile)
+/**
+ * @openapi
+ * '/api/v1/doctors/profile':
+ *  patch:
+ *     tags:
+ *     - Doctors 
+ *     summary: Update Doctor Profile
+ */
+  .patch(updateDoctorProfile)
+/**
+* @openapi
+* '/api/v1/doctors/profile':
+*  delete:
+*     tags:
+*     - Doctors 
+*     summary: Delete Doctor Profile
+*/
+  .delete(deleteDoctorProfile)
+
+/**
+ * @openapi
+ * '/api/v1/doctors/appointments/':
+ *  post:
+ *     tags:
+ *     - Doctors 
+ *     summary: Get Doctor's Appointments
+ */
+router.get('/appointments', getDoctorAppointments);
+/**
+ * @openapi
+ * '/api/v1/doctors/appointments/:appointmentId':
+ *  post:
+ *     tags:
+ *     - Doctors 
+ *     summary: Get Doctor's single Appointment
+ */
+router.get('/appointments/:appointmentId', getDoctorAppointment);
+/**
+ * @openapi
+ * '/api/v1/doctors/patients/':
+ *  post:
+ *     tags:
+ *     - Doctors 
+ *     summary: Get Doctor's Patients 
+ */
+router.get('/patients', getDoctorPatients);
+/**
+ * @openapi
+ * '/api/v1/doctors/patients/:patientId':
+ *  post:
+ *     tags:
+ *     - Doctors 
+ *     summary: Get Doctor's single Patient 
+ */
+router.get('/patients/:patientId', getDoctorPatient);
 
 export default router;

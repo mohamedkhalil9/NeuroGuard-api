@@ -56,8 +56,8 @@ export const emailValidator = [
   validatorMiddleware
 ]
 
-export const OTPValidator = [
-  body('OTP')
+export const otpValidator = [
+  body('otp')
     .notEmpty()
     .withMessage('OTP verification code is required')
     .isLength({ min: 4, max: 4 })

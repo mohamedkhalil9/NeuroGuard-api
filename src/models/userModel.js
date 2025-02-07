@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
   },
   country: String,
   address: String,
-  OTP: String,
+  otp: String,
   otpExpire: Date,
   googleId: String,
   createdAt: { type: Date, default: Date.now }

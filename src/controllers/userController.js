@@ -2,12 +2,6 @@ import User from './../models/userModel.js';
 import asyncWrapper from './../middlewares/asyncWrapper.js';
 import ApiError from './../utils/apiError.js';
 
-export const getMe = asyncWrapper(async (req, res) => {
-  const { user } = req;
-  res.status(200).json({ status: "success", data: {user} });
-})
-
-
 export const getUsers = asyncWrapper(async (req, res) => {
   // query validation ??
   const query = { ...req.query };
@@ -27,15 +21,6 @@ export const getUsers = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", results: users.length, data: { users }});
 })
 
-export const addUser = asyncWrapper(async(req, res) => {
-  const { title, description, estimated } = req.body;
-  //const user = await User.create({ title, description, completed: false });
-  const user = await User.create({ title, description, estimated });
-
-  res.status(201).json({ status: 'success', data: { user }});
-  //res.status(201).json({ status: 'success', data: user });
-})
-
 export const getUser = asyncWrapper(async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id);
@@ -43,21 +28,12 @@ export const getUser = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", data: { user }});
 })
 
-//export const toggleComplete = asyncWrapper(async(req, res) => {
-//  const { id } = req.params;
-//
-//  const user = await User.findById(id);
-//  if (!user) throw new ApiError(`there is no user with id ${id}`, 404);
-//
-//  //user = !user.completed;
-//  //const updatedUser = await user.save();
-//  const toggle = !user.completed;
-//  const updatedUser = await User.findByIdAndUpdate(id, { completed: toggle }, { new: true });
-//
-//  res.status(200).json({ status: 'success', data: { updatedUser }});
-//})
+export const getUserProfile = asyncWrapper(async (req, res) => {
+  const { user } = req;
+  res.status(200).json({ status: "success", data: {user} });
+})
 
-export const updateUser = asyncWrapper(async (req, res) => {
+export const updateUserProfile = asyncWrapper(async (req, res) => {
   const { id } = req.params;
   const { title, description, estimated } = req.body;
 
@@ -70,7 +46,7 @@ export const updateUser = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", data: { updatedUser }});
 })
 
-export const deleteUser = asyncWrapper(async (req, res) => {
+export const deleteUserProfile = asyncWrapper(async (req, res) => {
   const { id } = req.params;
   const user = await User.findByIdAndDelete(id);
   if (!user) throw new ApiError(`there is no user with id ${id}`, 404);

@@ -36,11 +36,9 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, passwor
   }
 }))
 
-const GOOGLE_CLIENT_ID ='411796887638-5lna86jp75n0ovkd6208v21e49bkv3ov.apps.googleusercontent.com'
-const GOOGLE_CLIENT_SECRET ='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'
 passport.use(new GoogleStrategy({
-  clientID: GOOGLE_CLIENT_ID,
-  clientSecret: GOOGLE_CLIENT_SECRET,
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: '/api/v1/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
   try {

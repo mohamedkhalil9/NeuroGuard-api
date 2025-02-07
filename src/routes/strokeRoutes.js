@@ -1,15 +1,39 @@
 import { Router } from 'express';
-import { detection, predection, chatbot } from './../controllers/strokeController.js'
-import ensureAuthenticated from '../middlewares/ensureAuthenticated.js';
+import { detection, prediction, chatbot } from './../controllers/strokeController.js'
+import { authenticate } from '../controllers/authController.js'
 
 const router = Router();
 
-// Protected 
-// ROLES All
-router.use(ensureAuthenticated);
+router.use(authenticate);
 
+/**
+* @openapi
+* '/api/v1/stroke/detect':
+*  post:
+*     tags:
+*     - Stroke 
+*     summary: Stroke Detection using MRI img 
+*/
 router.post('/detect', detection)
-router.post('/predect', predection)
+
+/**
+* @openapi
+* '/api/v1/stroke/predict':
+*  post:
+*     tags:
+*     - Stroke 
+*     summary: Stroke Survey Risk Prediction 
+*/
+router.post('/predict', prediction)
+
+/**
+* @openapi
+* '/api/v1/stroke/chat':
+*  post:
+*     tags:
+*     - Stroke 
+*     summary: Stroke Chatbot 
+*/
 router.post('/chat', chatbot)
 
 export default router;
