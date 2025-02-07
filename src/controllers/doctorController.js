@@ -44,7 +44,7 @@ export const getDoctorAppointment = asyncWrapper(async (req, res) => {
 
 export const getDoctorPatients = asyncWrapper(async (req, res) => {
   const id = req.user._id;
-  const appointments = await Appointment.find({ doctor: id })//.select('-')
+  const appointments = await Appointment.find({ doctor: id }).select('patient')
     .populate('patient', 'firstName lastName') // Populate patient details
   res.status(200).json({ status: 'success', data: appointments });
 })
@@ -58,7 +58,7 @@ export const getDoctorPatient = asyncWrapper(async (req, res) => {
   const doctor = await Doctor.findById(id);
   if (!doctor || doctor.role !== 'doctor') throw new ApiError('doctor not found', 404)
 
-  const appointment = await Appointment.findOne({_id: appointmentId, doctor: id})//.select('-')
+  const appointment = await Appointment.findOne({_id: appointmentId, doctor: id}).select('patient')
     .populate('patient', 'firstName lastName'); // Populate doctor details
 
   if (!appointment) throw new ApiError('appointment not found', 404)
@@ -98,17 +98,16 @@ export const getDoctorProfile = asyncWrapper(async (req, res) => {
 })
 
 export const updateDoctorProfile = asyncWrapper(async (req, res) => {
-//  const { id } = req.params;
   const id = req.user._id;
-//  const { title, description, estimated } = req.body;
-//
-//  const doctor = await Doctor.findById(id);
-//  if (!doctor) throw new ApiError(`there is no doctor with id ${id}`, 404);
-//
-//  const newDoctor = { title, description, estimated };
-//  const updatedDoctor = await Doctor.findByIdAndUpdate(id, newDoctor, { new: true });
-//
-//  res.status(200).json({ status: "success", data: { updatedDoctor }});
+  //const { title, description, estimated } = req.body;
+
+  const doctor = await Doctor.findById(id);
+  if (!doctor) throw new ApiError(`there is no doctor with id ${id}`, 404);
+
+  const newDoctor = { ...req.body };
+  const updatedDoctor = await Doctor.findByIdAndUpdate(id, newDoctor, { new: true });
+
+  res.status(200).json({ status: "success", data: { updatedDoctor }});
 })
 
 export const deleteDoctorProfile = asyncWrapper(async (req, res) => {

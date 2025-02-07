@@ -18,6 +18,18 @@ export const registerPatient = asyncWrapper(async (req, res) => {
   res.status(201).json({ status: "success", data: newPatient });
 })
 
+export const createAppointment = asyncWrapper(async (req, res) => {
+  const id = req.user._id;
+  const { date, time, doctorId, notes } = req.body;
+  
+  const appointment = await Appointment.create({ date, time, patient: id, doctor: doctorId, notes });
+  res.status(201).json({ status: 'success', data: appointment });
+})
+
+export const payAppointment = asyncWrapper(async (req, res) => {
+
+})
+
 export const getPatientAppointments = asyncWrapper(async (req, res) => {
   const { id } = req.user._id;
 

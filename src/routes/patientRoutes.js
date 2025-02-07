@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getPatientAppointments, getPatientAppointment, registerPatient, getPatientProfile, updatePatientProfile, deletePatientProfile } from '../controllers/patientController.js'
+import { getPatientAppointments, getPatientAppointment, registerPatient, getPatientProfile, updatePatientProfile, deletePatientProfile, createAppointment, payAppointment } from '../controllers/patientController.js'
 import { authenticate } from '../controllers/authController.js';
-import { registerValidator } from '../validators/validators.js'
+import { registerValidator, appointmentValidator } from '../validators/validators.js'
 
 const router = Router();
  
@@ -94,7 +94,7 @@ router.route('/profile')
  *         description: Server Error
  */
 
-router.post('/appointments', getPatientAppointments)
+router.post('/appointments', appointmentValidator, createAppointment)
 
 /**
  * @swagger
@@ -136,7 +136,7 @@ router.get('/appointments/:appointmentId', getPatientAppointment)
  *     - Patients 
  *     summary: Appointment Payment 
  */
-router.post('/appointments/:appointmentId/pay')
+router.post('/appointments/:appointmentId/pay', payAppointment)
 
 /**
  * @swagger

@@ -27,26 +27,35 @@ const router = Router();
  */
 router.post('/register', registerValidator, registerDoctor)
 
-
-router.use(authenticate)
-
 /**
-* @openapi
-* '/api/v1/doctors/':
-*  get:
+* @swagger
+* /api/v1/doctors/:
+*   get:
 *     tags: [Doctors]
-*     summary: Get All Doctors
+*     summary: List All Doctors
+*     responses:
+*       200:
+*         description: Success
+*       500:
+*         description: Server Error
 */
 router.get('/', getDoctors)
+
 /**
-* @openapi
-* '/api/v1/doctors/{id}':
-*  get:
+* @swagger
+* /api/v1/doctors/{id}:
+*   get:
 *     tags: [Doctors]
 *     summary: Get single Doctors
+*     responses:
+*       200:
+*         description: Success
+*       500:
+*         description: Server Error
 */
 router.get('/:id', idValidator, getDoctor)
 
+router.use(authenticate)
 router.route('/profile')
 
 /**

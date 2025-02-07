@@ -64,3 +64,18 @@ export const otpValidator = [
     .withMessage('enter a valid OTP code'),
   validatorMiddleware
 ]
+
+export const appointmentValidator = [
+  body('date')
+    .notEmpty()
+    .withMessage('enter a date'),
+  body('time')
+    .notEmpty()
+    .withMessage('enter a time'),
+  body('doctorId')
+    .notEmpty()
+    .withMessage('enter doctor id')
+    .isMongoId()
+    .withMessage('invalid id'),
+  validatorMiddleware
+]
