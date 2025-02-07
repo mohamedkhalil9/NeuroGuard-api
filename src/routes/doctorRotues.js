@@ -34,8 +34,7 @@ router.use(authenticate)
 * @openapi
 * '/api/v1/doctors/':
 *  get:
-*     tags:
-*     - Doctors
+*     tags: [Doctors]
 *     summary: Get All Doctors
 */
 router.get('/', getDoctors)
@@ -43,8 +42,7 @@ router.get('/', getDoctors)
 * @openapi
 * '/api/v1/doctors/{id}':
 *  get:
-*     tags:
-*     - Doctors
+*     tags: [Doctors]
 *     summary: Get single Doctors
 */
 router.get('/:id', idValidator, getDoctor)
@@ -122,8 +120,8 @@ router.get('/appointments', getDoctorAppointments);
  *     summary: Get Doctor single Appointment
  *     parameters:
  *       - name: appointmentId
- *       in: path
- *       required: true
+ *         in: path
+ *         required: true
  *     responses:
  *       200:
  *         description: Success 
@@ -156,8 +154,8 @@ router.get('/patients', getDoctorPatients);
  *     summary: Get Doctor single Patient
  *     parameters:
  *       - name: patientId 
- *       in: path
- *       required: true
+ *         in: path
+ *         required: true
  *     responses:
  *       200:
  *         description: Success 

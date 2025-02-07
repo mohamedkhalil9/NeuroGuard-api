@@ -119,8 +119,8 @@ router.get('/appointments', getPatientAppointments)
  *     summary: Get Patient single Appointment
  *     parameters:
  *       - name: appointmentId
- *       in: path
- *       required: true
+ *         in: path
+ *         required: true
  *     responses:
  *       200:
  *         description: Success 
