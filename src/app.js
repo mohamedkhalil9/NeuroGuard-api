@@ -28,40 +28,24 @@ app.use(session({
   }) 
 }))
 
-// Multer
-// Cloudinary
-// Stripe - PayPal -> any other?
-// XSS - CSRF (cros site something) 'security'
-// WINSTON (logger)
-// dev and prod env (.env variable for diffrenet environments for control over them)
-
-//cloudinary.config({ 
-//  cloud_name: 'my_cloud_name', 
-//  api_key: 'my_key', 
-//  api_secret: 'my_secret'
-
-//});
-//cloudinary.uploader
-//  .upload("my_image.jpg")
-//  .then(result=>console.log(result));
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
 });
 app.use('/api', apiLimiter);
+app.use(helmet());
 app.use(cors({
   credentials: true,
   origin: 'http://localhost:5173'
 }))
 app.use(morgan('dev'));
-app.use(helmet());
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-// COMPONENT SCHEMAS
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(spec));
+// SWAGGER JSON DOCS
 app.use('/api/v1', appRouter);
 
 app.all('*', (req, res, next)=> {

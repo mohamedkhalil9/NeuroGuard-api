@@ -1,4 +1,5 @@
-export const emailTemplate = (otp) => {return `<!doctype html>
+export const emailTemplate = (otp) => {
+  return `<!doctype html>
 <html lang="en" >
 <head>
   <meta charset="utf-8">
@@ -29,4 +30,4 @@ export const emailTemplate = (otp) => {return `<!doctype html>
   
 </body>
 </html>`
-  }
+}

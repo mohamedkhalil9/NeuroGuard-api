@@ -31,7 +31,7 @@ export const payAppointment = asyncWrapper(async (req, res) => {
 })
 
 export const getPatientAppointments = asyncWrapper(async (req, res) => {
-  const { id } = req.user._id;
+  const id = req.user._id;
 
   const appointments = await Appointment.find({ patient: id })
     .populate('doctor', 'firstName lastName specialization') // Populate doctor details
@@ -41,11 +41,9 @@ export const getPatientAppointments = asyncWrapper(async (req, res) => {
 });
 
 export const getPatientAppointment = asyncWrapper(async (req, res) => {
-  const { id } = req.user._id;
+  const id = req.user._id;
   const { appointmentId } = req.params;
 
-  // Could be User.find() also => discriminator: same document
-  //const patient = await User.findById(id);
   const patient = await Patient.findById(id);
   if (!patient || patient.role !== 'patient') throw new ApiError('patient not found', 404)
 
@@ -57,18 +55,11 @@ export const getPatientAppointment = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: 'success', data: appointment});
 })
 
-export const getPatient = asyncWrapper(async (req, res) => {
-  const { id } = req.params;
-  const patient = await Patient.findById(id);
-  if (!patient) throw new ApiError("patient not found", 404);
-  res.status(200).json({ status: "success", data: { patient }});
-})
-
 export const getPatientProfile = asyncWrapper(async (req, res) => {
   const id = req.user._id;
 
   const patient = await Patient.findById(id).select('-password');
-  //if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
+  if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
   
   res.status(200).json({ status: "success", data: { patient } });
 })
@@ -77,7 +68,7 @@ export const updatePatientProfile = asyncWrapper(async (req, res) => {
   const id = req.user._id;
 
   const patient = await Patient.findById(id);
-  //if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
+  if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
   
   const newPatient = { ...req.body };
   const updatedPatient = await Patient.findByIdAndUpdate(id, newPatient, { new: true });
@@ -88,6 +79,6 @@ export const updatePatientProfile = asyncWrapper(async (req, res) => {
 export const deletePatientProfile = asyncWrapper(async (req, res) => {
   const id = req.user._id;
   const patient = await Patient.findByIdAndDelete(id);
-  //if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
+  if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
   res.status(200).json({ status: "success", data: null });
 })

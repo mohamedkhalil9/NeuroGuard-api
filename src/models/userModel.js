@@ -11,7 +11,8 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true
+    required: true, 
+    unique: true 
   },
   password: {
     type: String,
@@ -19,8 +20,9 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['patient', 'doctor', 'admin'],
+    //required: true
   },
-  __t: { type: String, default: 'User' },
+  //__t: { type: String, default: 'User' },
   gender: {
     type: String,
     enum: ['Male', 'Female'],
@@ -28,11 +30,11 @@ const userSchema = new mongoose.Schema({
   },
   dateOfBirth: {
     type: Date,
-    //required: true,
+    //required: true
   },
   phone: {
     type: String,
-    //required: true,
+    //required: true
   },
   country: String,
   address: String,
@@ -42,17 +44,6 @@ const userSchema = new mongoose.Schema({
   googleId: String,
   createdAt: { type: Date, default: Date.now }
 });
-
-//const userSchema = new mongoose.Schema({
-//  username: { type: String, required: true, unique: true },
-//  password: { type: String, required: true },
-//  role: { type: String, enum: ['patient', 'doctor', 'admin'], required: true },
-//  firstName: { type: String, required: true },
-//  lastName: { type: String, required: true },
-//  email: { type: String, required: true, unique: true },
-//  phone: { type: String },
-//  createdAt: { type: Date, default: Date.now },
-//});
 
 const User = mongoose.model('User', userSchema);
 

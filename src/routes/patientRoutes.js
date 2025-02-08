@@ -42,6 +42,7 @@ router.route('/profile')
  *         description: Access Denied please Login 
  */
   .get(getPatientProfile)
+
 /**
  * @swagger
  * /api/v1/patients/profile:
@@ -60,6 +61,7 @@ router.route('/profile')
  *       500:
  *         description: Server Error 
  */
+
   .patch(updatePatientProfile)
 /**
  * @swagger
@@ -73,6 +75,7 @@ router.route('/profile')
  *       500:
  *         description: Server Error 
  */
+
   .delete(deletePatientProfile)
 
 /**
@@ -93,7 +96,6 @@ router.route('/profile')
  *       500:
  *         description: Server Error
  */
-
 router.post('/appointments', appointmentValidator, createAppointment)
 
 /**
@@ -108,7 +110,6 @@ router.post('/appointments', appointmentValidator, createAppointment)
  *       500:
  *         description: Server Error
  */
-
 router.get('/appointments', getPatientAppointments)
 
 /**
@@ -128,9 +129,10 @@ router.get('/appointments', getPatientAppointments)
  *         description: Server Error
  */
 router.get('/appointments/:appointmentId', getPatientAppointment)
+
 /**
  * @openapi
- * '/api/v1/patients/appointments/{appointmentId}':
+ * '/api/v1/patients/appointments/{appointmentId}/pay':
  *  post:
  *     tags:
  *     - Patients 

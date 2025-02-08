@@ -35,7 +35,7 @@ router.use(authenticate);
 router.route('/profile')
   .get(getUserProfile)
 /**
- * @swagger
+ * swagger
  * /api/v1/users/profile:
  *  patch:
  *    summary: Update
@@ -60,6 +60,7 @@ router.route('/profile')
  *        description: Some error happened
  */
   .patch(updateUserProfile)
+
 /**
  * openapi
  * '/api/v1/users/{userId}':

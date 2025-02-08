@@ -181,5 +181,4 @@ router.patch('/reset-password', resetPassword)
  *   name: Auth 
  */
 
-
 export default router;

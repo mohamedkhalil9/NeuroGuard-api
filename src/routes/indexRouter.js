@@ -17,6 +17,5 @@ router.use('/storke', strokeRoutes);
 
 // PAYMENT
 // NOTIFICATIONS
-// SEARCH 
 
 export default router;

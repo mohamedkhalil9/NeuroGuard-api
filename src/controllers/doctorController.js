@@ -26,11 +26,9 @@ export const getDoctorAppointments = asyncWrapper(async (req, res) => {
 })
 
 export const getDoctorAppointment = asyncWrapper(async (req, res) => {
-  const { id } = req.user._id;
+  const id = req.user._id;
   const { appointmentId } = req.params;
 
-  // Could be Doctor.find() also => discriminator: same document
-  //const patient = await Doctor.findById(id);
   const doctor = await Doctor.findById(id);
   if (!doctor || doctor.role !== 'doctor') throw new ApiError('doctor not found', 404)
 
@@ -53,8 +51,6 @@ export const getDoctorPatient = asyncWrapper(async (req, res) => {
   const { id } = req.user._id;
   const { appointmentId } = req.params;
 
-  // Could be Doctor.find() also => discriminator: same document
-  //const patient = await Doctor.findById(id);
   const doctor = await Doctor.findById(id);
   if (!doctor || doctor.role !== 'doctor') throw new ApiError('doctor not found', 404)
 
@@ -99,7 +95,6 @@ export const getDoctorProfile = asyncWrapper(async (req, res) => {
 
 export const updateDoctorProfile = asyncWrapper(async (req, res) => {
   const id = req.user._id;
-  //const { title, description, estimated } = req.body;
 
   const doctor = await Doctor.findById(id);
   if (!doctor) throw new ApiError(`there is no doctor with id ${id}`, 404);

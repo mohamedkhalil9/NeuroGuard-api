@@ -71,6 +71,7 @@ router.route('/profile')
  *         description: Access Denied please Login 
  */
   .get(getDoctorProfile)
+
  /**
  * @swagger
  * /api/v1/doctors/profile:
@@ -89,7 +90,6 @@ router.route('/profile')
  *       500:
  *         description: Server Error 
  */
-
   .patch(updateDoctorProfile)
 
 /**
@@ -105,7 +105,6 @@ router.route('/profile')
  *         description: Server Error 
  */
   .delete(deleteDoctorProfile)
-
 
 /**
  * @swagger
@@ -152,7 +151,6 @@ router.get('/appointments/:appointmentId', getDoctorAppointment);
  *       500:
  *         description: Server Error
  */
-
 router.get('/patients', getDoctorPatients);
 
 /**
