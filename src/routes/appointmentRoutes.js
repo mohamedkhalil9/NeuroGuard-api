@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAppointments, getAppointment, createAppointment, payAppointment, getDoctorAppointment, getDoctorAppointments, getPatientAppointment, getPatientAppointments } from './../controllers/appointmentContorller.js';
+import { getAppointments, getAppointment, createAppointment, payAppointment } from './../controllers/appointmentContorller.js';
 import { idValidator, appointmentValidator } from './../validators/validators.js';
 import { authenticate } from '../controllers/authController.js';
 
@@ -8,9 +8,9 @@ const router = Router();
 router.use(authenticate)
 router.route('/')
   .post(appointmentValidator, createAppointment)
-  .get(getPatientAppointments) // getDoctorAppointments
+  .get(getAppointments)
 
-router.route('/:appointmentId').get(getPatientAppointment) // getPatientAppointment
+router.route('/:appointmentId').get(getAppointment)
 
 router.route('/:appointmentId/pay').post(payAppointment)
 
