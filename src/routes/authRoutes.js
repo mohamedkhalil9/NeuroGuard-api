@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, logout, forgotPassword, verifyOtp, resetPassword } from './../controllers/authController.js';
+import { login, logout, forgotPassword, verifyOtp, resetPassword, authenticate } from './../controllers/authController.js';
 import { emailValidator, loginValidator, otpValidator } from './../validators/validators.js';
 import passport from 'passport';
 
@@ -58,7 +58,7 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
  *       500:
  *         description: Server Error
  */
-router.get('/logout', logout)
+router.get('/logout',authenticate, logout)
 
 /**
  * @swagger
