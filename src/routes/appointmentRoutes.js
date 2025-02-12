@@ -96,7 +96,7 @@ router.route('/:appointmentId/pay').post(payAppointment)
  * /api/v1/appointments:
  *   get:
  *     tags: [Appointments]
- *     summary: Get Patient Appointments
+ *     summary: Get Appointments
  *     responses:
  *       200:
  *         description: Success 
@@ -109,7 +109,7 @@ router.route('/:appointmentId/pay').post(payAppointment)
  * /api/v1/appointments/{appointmentId}:
  *   get:
  *     tags: [Appointments]
- *     summary: Get Patient single Appointment
+ *     summary: Get single Appointment
  *     parameters:
  *       - name: appointmentId
  *         in: path

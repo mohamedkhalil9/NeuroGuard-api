@@ -11,7 +11,6 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import swaggerUi from 'swagger-ui-express'
 import spec from './utils/swagger.js';
-import { v2  as cloudinary } from 'cloudinary';
 import connectDB from './config/db.js';
 import appRouter from './routes/indexRouter.js';
 
@@ -27,7 +26,6 @@ app.use(session({
     client: mongoose.connection.getClient()
   }) 
 }))
-
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -45,7 +43,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(spec));
-// SWAGGER JSON DOCS
+app.get('/docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json')
+  res.send(spec)
+})
 app.use('/api/v1', appRouter);
 
 app.all('*', (req, res, next)=> {
