@@ -9,13 +9,7 @@ router.use(authenticate);
 router.post('/detect', detection)
 router.post('/predict', prediction)
 
-router.route('/chats')
-  .post(chatbot)
-  .get(chatbot)
-
-router.route('/chats/:id')
-  .post(chatbot)
-  .get(chatbot)
+router.post('/chat', chatbot)
 
 /**
 * @openapi
@@ -37,39 +31,11 @@ router.route('/chats/:id')
 
 /**
 * @openapi
-* '/api/v1/stroke/chats/':
+* '/api/v1/stroke/chat/':
 *  post:
 *     tags:
 *     - Stroke 
-*     summary: Create New Chat 
+*     summary: Chat with stroke chatbot
 */
-
-/**
-* @openapi
-* '/api/v1/stroke/chats':
-*  get:
-*     tags:
-*     - Stroke 
-*     summary: Get Stroke Chatbot All Chats
-*/
-
-/**
-* @openapi
-* '/api/v1/stroke/chats/{id}':
-*  post:
-*     tags:
-*     - Stroke 
-*     summary: Chat with chatbot 
-*/
-
-/**
-* @openapi
-* '/api/v1/stroke/chats/{id}':
-*  get:
-*     tags:
-*     - Stroke 
-*     summary: Get Stroke Chatbot single Chat
-*/
-
 
 export default router;
