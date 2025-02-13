@@ -8,6 +8,13 @@ const router = Router();
 router.use(authenticate);
 
 //router.get('/', getUsers)
+//router.get('/:id', idValidator, getUser)
+
+router.route('/profile')
+  .get(getUserProfile)
+  .patch(updateUserProfile)
+  .delete(deleteUserProfile)
+
 /**
  * openapi
  * '/api/v1/users/{userId}':
@@ -30,10 +37,7 @@ router.use(authenticate);
  *      500:
  *        description: Server Error
  */
-//router.get('/:id', idValidator, getUser)
 
-router.route('/profile')
-  .get(getUserProfile)
 /**
  * swagger
  * /api/v1/users/profile:
@@ -59,7 +63,6 @@ router.route('/profile')
  *      500:
  *        description: Some error happened
  */
-  .patch(updateUserProfile)
 
 /**
  * openapi
@@ -83,6 +86,5 @@ router.route('/profile')
  *      500:
  *        description: Server Error
  */
-  .delete(deleteUserProfile)
 
 export default router;

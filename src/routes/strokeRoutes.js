@@ -6,6 +6,17 @@ const router = Router();
 
 router.use(authenticate);
 
+router.post('/detect', detection)
+router.post('/predict', prediction)
+
+router.route('/chats')
+  .post(chatbot)
+  .get(chatbot)
+
+router.route('/chats/:id')
+  .post(chatbot)
+  .get(chatbot)
+
 /**
 * @openapi
 * '/api/v1/stroke/detect':
@@ -14,7 +25,6 @@ router.use(authenticate);
 *     - Stroke 
 *     summary: Stroke Detection using MRI img 
 */
-router.post('/detect', detection)
 
 /**
 * @openapi
@@ -24,7 +34,6 @@ router.post('/detect', detection)
 *     - Stroke 
 *     summary: Stroke Survey Risk Prediction 
 */
-router.post('/predict', prediction)
 
 /**
 * @openapi
@@ -34,8 +43,6 @@ router.post('/predict', prediction)
 *     - Stroke 
 *     summary: Create New Chat 
 */
-router.get('/chats', chatbot)
-
 
 /**
 * @openapi
@@ -45,7 +52,6 @@ router.get('/chats', chatbot)
 *     - Stroke 
 *     summary: Get Stroke Chatbot All Chats
 */
-router.get('/chats', chatbot)
 
 /**
 * @openapi
@@ -55,7 +61,6 @@ router.get('/chats', chatbot)
 *     - Stroke 
 *     summary: Chat with chatbot 
 */
-router.post('/chats/:id', chatbot)
 
 /**
 * @openapi
@@ -65,7 +70,6 @@ router.post('/chats/:id', chatbot)
 *     - Stroke 
 *     summary: Get Stroke Chatbot single Chat
 */
-router.get('/chats/:id', chatbot)
 
 
 export default router;

@@ -19,6 +19,7 @@ export const registerPatient = asyncWrapper(async (req, res) => {
   res.status(201).json({ status: "success", data: newPatient });
 })
 
+// NOTE: add patient filters (aggregation)
 export const getDoctorPatients = asyncWrapper(async (req, res) => {
   const id = req.user._id;
   const appointments = await Appointment.find({ doctor: id }).select('patient')
@@ -26,6 +27,7 @@ export const getDoctorPatients = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: 'success', data: appointments });
 })
 
+// NOTE: using patientId instead of appointmentId? 
 export const getDoctorPatient = asyncWrapper(async (req, res) => {
   const { id } = req.user._id;
   const { appointmentId } = req.params;

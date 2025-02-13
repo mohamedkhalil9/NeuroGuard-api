@@ -5,6 +5,43 @@ import passport from 'passport';
 
 const router = Router();
  
+router.post('/login', loginValidator, passport.authenticate('local'), login)
+router.get('/logout',authenticate, logout)
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: false }), (req, res) => {
+  res.redirect('http://localhost:5173')
+})
+
+router.post('/forgot-password', emailValidator, forgotPassword)
+router.post('/verify-otp', otpValidator, verifyOtp)
+router.patch('/reset-password', resetPassword)
+
+/**
+ * @swagger
+ * tags:
+ *   name: Auth 
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+*     Login:
+ *       type: object
+ *       required:
+ *         - email 
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *       example:
+ *         email: ahmedmahmoud4@email.com 
+ *         password: '1234'
+ */
+
 /**
  * @swagger
  * /api/v1/auth/login:
@@ -27,7 +64,6 @@ const router = Router();
  *       500:
  *         description: Server Error
  */
-router.post('/login', loginValidator, passport.authenticate('local'), login)
 
 /**
  * @swagger
@@ -41,10 +77,6 @@ router.post('/login', loginValidator, passport.authenticate('local'), login)
  *       500:
  *         description: Server Error
  */
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: false }), (req, res) => {
-  res.redirect('http://localhost:5173')
-})
 
 /**
  * @swagger
@@ -58,7 +90,6 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
  *       500:
  *         description: Server Error
  */
-router.get('/logout',authenticate, logout)
 
 /**
  * @swagger
@@ -86,8 +117,7 @@ router.get('/logout',authenticate, logout)
  *       500:
  *         description: Server Error
  */
-router.post('/forgot-password', emailValidator, forgotPassword)
-  
+ 
 /**
  * @swagger
  * /api/v1/auth/verify-otp:
@@ -118,7 +148,6 @@ router.post('/forgot-password', emailValidator, forgotPassword)
  *       500:
  *         description: Server Error
  */
-router.post('/verify-otp', otpValidator, verifyOtp)
 
 /**
  * @swagger
@@ -153,32 +182,6 @@ router.post('/verify-otp', otpValidator, verifyOtp)
  *         description: access denied otp is not verified 
  *       500:
  *         description: Server Error
- */
-router.patch('/reset-password', resetPassword)
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     Login:
- *       type: object
- *       required:
- *         - email 
- *         - password
- *       properties:
- *         email:
- *           type: string
- *         password:
- *           type: string
- *       example:
- *         email: ahmedmahmoud4@email.com 
- *         password: '1234'
- */
-
-/**
- * @swagger
- * tags:
- *   name: Auth 
  */
 
 export default router;
