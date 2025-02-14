@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     enum: ['patient', 'doctor', 'admin'],
     //required: true
   },
-  discriminatorKey: 'role' , // Now "role" is the discriminator key
+  // discriminatorKey: 'role' , // Now "role" is the discriminator key
   //__t: { type: String, default: 'User' },
   gender: {
     type: String,

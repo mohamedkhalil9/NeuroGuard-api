@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { registerPatient, getPatientProfile, updatePatientProfile, deletePatientProfile, getDoctorPatients, getDoctorPatient } from '../controllers/patientController.js'
-import { authenticate } from '../controllers/authController.js';
+import { registerPatient, getPatientProfile, updatePatientProfile, deletePatientProfile, getPatients, getPatient } from '../controllers/patientController.js'
+import { authenticate, authorize } from '../controllers/authController.js';
 import { registerValidator, idValidator } from '../validators/validators.js'
 
 const router = Router();
@@ -9,13 +9,14 @@ router.post('/register',registerValidator, registerPatient)
 
 router.use(authenticate)
 
-router.get('/patients', getDoctorPatients);
-router.get('/patients/:patientId',idValidator, getDoctorPatient);
-
 router.route('/profile')
-  .get(getPatientProfile)
-  .patch(updatePatientProfile)
-  .delete(deletePatientProfile)
+  .get(authorize('patient'), getPatientProfile)
+  .patch(authorize('patient'), updatePatientProfile)
+  .delete(authorize('patient'), deletePatientProfile)
+
+router.get('/',authorize('doctor'),  getPatients);
+router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
+
 
 
 /**
@@ -96,7 +97,7 @@ router.route('/profile')
 
 /**
  * @swagger
- * /api/v1/doctors/patients:
+ * /api/v1/patients:
  *   get:
  *     tags: [Patients]
  *     summary: Get Doctor patients 
@@ -109,7 +110,7 @@ router.route('/profile')
 
 /**
  * @swagger
- * /api/v1/doctors/patients/{patientId}:
+ * /api/v1/patients/{patientId}:
  *   get:
  *     tags: [Patients]
  *     summary: Get Doctor single Patient

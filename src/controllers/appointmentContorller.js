@@ -8,6 +8,7 @@ export const createAppointment = asyncWrapper(async (req, res) => {
   const id = req.user._id;
   const { date, time, doctorId, notes } = req.body;
   
+  // NOTE: doc avaliable time validation
   const appointment = await Appointment.create({ date, time, patient: id, doctor: doctorId, notes });
   res.status(201).json({ status: 'success', data: appointment });
 })
@@ -17,42 +18,33 @@ export const payAppointment = asyncWrapper(async (req, res) => {
 })
 
 export const getAppointments = asyncWrapper(async (req, res) => {
-  const id = req.user._id;
-  const { role } = req.user;
-  
-  let appointments;
-  if (role == 'Patinet') {
-    appointments = await Appointment.find({ patient: id })
-      .populate('doctor', 'firstName lastName specialization') // Populate doctor details
-      .populate("patient", 'firstName lastName'); // Populate patient details (optional)
-    return appointments
-  } else if (role == 'Doctor') {
-    appointments = await Appointment.find({ doctor: id })
-      .populate('doctor', 'firstName lastName specialization') // Populate doctor details
-      .populate("patient", 'firstName lastName'); // Populate patient details (optional)
-    return appointments
-  } 
-  
+  const { user } = req;
+
+  const query = {};
+  if (user.role === 'patient') query.patient = user._id;
+  else if (user.role === 'doctor') query.doctor = user._id;
+
+  const appointments = await Appointment.find(query)
+    .populate('doctor', 'firstName lastName specialization') // Populate doctor details
+    .populate("patient", 'firstName lastName'); // Populate patient details (optional)
+
+  if (!appointments[0]) throw new ApiError('there is no appointments for this user', 404);
+
   res.status(200).json({ status: 'success', data: appointments });
 });
 
 export const getAppointment = asyncWrapper(async (req, res) => {
-  const id = req.user._id;
+  // const { user } = req;
   const { appointmentId } = req.params;
-  const { role } = req.user;
-  
-  let appointment;
-  if (role == 'Patinet') {
-    appointment = await Appointment.findOne({_id: appointmentId, patient: id })
+
+  // const query = {_id: appointmentId};
+  // if (user.role === 'patient') query.patient = user._id;
+  // else if (user.role === 'doctor') query.doctor = user._id;
+
+  // const appointment = await Appointment.findOne(query)
+  const appointment = await Appointment.findById(appointmentId)
       .populate('doctor', 'firstName lastName specialization') // Populate doctor details
       .populate("patient", 'firstName lastName'); // Populate patient details (optional)
-    return appointment
-  } else if (role == 'Doctor') {
-    appointment = await Appointment.findOne({_id: appointmentId, doctor: id })
-      .populate('doctor', 'firstName lastName specialization') // Populate doctor details
-      .populate("patient", 'firstName lastName'); // Populate patient details (optional)
-    return appointment
-  }
 
   if (!appointment) throw new ApiError('appointment not found', 404)
 

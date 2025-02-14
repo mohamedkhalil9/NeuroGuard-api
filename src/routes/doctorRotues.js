@@ -1,21 +1,19 @@
 import { Router } from 'express';
 import { getDoctors, getDoctor, registerDoctor, getDoctorProfile, updateDoctorProfile, deleteDoctorProfile } from '../controllers/doctorController.js';
 import { registerValidator, idValidator } from './../validators/validators.js';
-import { authenticate } from '../controllers/authController.js'
+import { authenticate, authorize } from '../controllers/authController.js'
 
 const router = Router();
 
 router.post('/register', registerValidator, registerDoctor)
 
-router.get('/', getDoctors)
-router.get('/:id', idValidator, getDoctor)
-
-router.use(authenticate)
 router.route('/profile')
-  .get(getDoctorProfile)
-  .patch(updateDoctorProfile)
-  .delete(deleteDoctorProfile)
+  .get(authenticate, authorize('doctor'), getDoctorProfile)
+  .patch(authenticate, authorize('doctor'), updateDoctorProfile)
+  .delete(authenticate, authorize('doctor'), deleteDoctorProfile)
 
+router.get('/', getDoctors)
+router.get('/:doctorId', idValidator, getDoctor)
 
 /**
  * @swagger
@@ -108,6 +106,10 @@ router.route('/profile')
 *   get:
 *     tags: [Doctors]
 *     summary: Get single Doctors
+*     parameters:
+*       - name: doctorId
+*         in: path
+*         required: true
 *     responses:
 *       200:
 *         description: Success

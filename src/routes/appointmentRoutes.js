@@ -1,17 +1,17 @@
-mport { Router } from 'express';
+import { Router } from 'express';
 import { getAppointments, getAppointment, createAppointment, payAppointment } from './../controllers/appointmentContorller.js';
 import { idValidator, appointmentValidator } from './../validators/validators.js';
-import { authenticate } from '../controllers/authController.js';
+import { authenticate, authorize } from '../controllers/authController.js';
 
 const router = Router();
 
 router.use(authenticate)
 router.route('/')
-  .post(appointmentValidator, createAppointment)
+  .post(appointmentValidator ,authorize('patient'), createAppointment)
   .get(getAppointments)
 
 router.route('/:appointmentId').get(idValidator, getAppointment)
-router.route('/:appointmentId/pay').post(idValidator, payAppointment)
+router.route('/:appointmentId/pay').post(idValidator,authorize('patient'), payAppointment)
 
 /**
  * @swagger
@@ -70,7 +70,7 @@ router.route('/:appointmentId/pay').post(idValidator, payAppointment)
  */
 
 /**
- * @openapi
+ * @swagger
  * '/api/v1/appointments/{appointmentId}/pay':
  *  post:
  *     tags: [Appointments]
@@ -96,36 +96,6 @@ router.route('/:appointmentId/pay').post(idValidator, payAppointment)
  *   get:
  *     tags: [Appointments]
  *     summary: Get single Appointment
- *     parameters:
- *       - name: appointmentId
- *         in: path
- *         required: true
- *     responses:
- *       200:
- *         description: Success 
- *       500:
- *         description: Server Error
- */
-
-/**
- * swagger
- * /api/v1/appointments:
- *   get:
- *     tags: [Appointments]
- *     summary: Get Doctor Appointments
- *     responses:
- *       200:
- *         description: Success 
- *       500:
- *         description: Server Error
- */
-
-/**
- * swagger
- * /api/v1/appointments/{appointmentId}:
- *   get:
- *     tags: [Appointments]
- *     summary: Get Doctor single Appointment
  *     parameters:
  *       - name: appointmentId
  *         in: path

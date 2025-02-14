@@ -10,14 +10,24 @@ export const login = asyncWrapper(async (req, res) => {
   req.login(user, (err) => {
     if (err) throw new ApiError(err.message , 500)
 
-    res.status(200).json({ id: user._id,  email: user.email })
+    const user = { ...req.user._doc };
+    delete user['password']
+
+    res.status(200).json({ user })
   })
 })
 
-export const authenticate = (req, res, next) => {
-  if (req.isAuthenticated()) return next()
+export const authenticate = ((req, res, next) => {
+  if (!req.isAuthenticated()) return next(new ApiError('access denied please login', 403));
+  next()
+})
 
-  return next(new ApiError('access denied', 403));
+export const authorize = (...roles) => {
+  return async (req, res, next) => {
+  const role = req.user.role;
+  if (!roles.includes(role)) return next(new ApiError("access denied unauthorized", 403));
+  next()
+  }
 }
 
 export const logout = asyncWrapper(async (req, res) => {
@@ -40,7 +50,11 @@ export const forgotPassword = asyncWrapper(async (req, res) => {
   user.otpExpire = Date.now() + 1000 * 60 * 5;
   await user.save();
 
-  sendResetMail(email, otp);
+  try {
+    sendResetMail(email, otp);
+  } catch (error) {
+    throw new ApiError(error, 500)
+  }
   
   res.status(200).json({ status: 'success', data: user.email })
 })
@@ -49,7 +63,7 @@ export const verifyOtp = asyncWrapper(async (req, res) => {
   const { otp, email } = req.body;
 
   const user = await User.findOne({ email });
-  const isMatch = bcrypt.compare(otp, user.otp)
+  const isMatch = await bcrypt.compare(otp, user.otp)
   if (user.otpExpire < Date.now() || !isMatch ) throw new ApiError('OTP code is not valid', 409)
 
   user.otpVerifed = true;

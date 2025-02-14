@@ -44,8 +44,12 @@ export const getDoctor = asyncWrapper(async (req, res) => {
 })
 
 export const getDoctorProfile = asyncWrapper(async (req, res) => {
-  const { doctor } = req;
-  res.status(200).json({ status: "success", data: {doctor} });
+  const id = req.user._id;
+
+  const doctor = await Doctor.findById(id).select('-password');
+  if (!doctor) throw new ApiError(`there is no doctor with id ${id}`, 404);
+  
+  res.status(200).json({ status: "success", data: { doctor } });
 })
 
 export const updateDoctorProfile = asyncWrapper(async (req, res) => {

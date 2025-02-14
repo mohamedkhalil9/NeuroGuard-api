@@ -29,7 +29,11 @@ export const getUser = asyncWrapper(async (req, res) => {
 })
 
 export const getUserProfile = asyncWrapper(async (req, res) => {
-  const { user } = req;
+  const id = req.user._id;
+
+  const user = await User.findById(id).select('-password');
+  if (!user) throw new ApiError(`there is no patient with id ${id}`, 404);
+  
   res.status(200).json({ status: "success", data: {user} });
 })
 

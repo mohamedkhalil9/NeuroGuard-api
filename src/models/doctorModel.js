@@ -11,6 +11,10 @@ const doctorSchema = new mongoose.Schema({
   //slug
 });
 
+doctorSchema.index({
+  firstName: 'text',
+  lastName: 'text',
+});
 //  licensenumber: { type: String, required: true, unique: true },
 //  isAvailable: { type: Boolean, default: true },
 

@@ -1,4 +1,5 @@
 import Patient from './../models/patientModel.js';
+import User from '../models/userModel.js'
 import Appointment from './../models/appointmentModel.js';
 import Doctor from './../models/doctorModel.js';
 import asyncWrapper from './../middlewares/asyncWrapper.js';
@@ -8,10 +9,9 @@ import bcrypt from 'bcrypt';
 export const registerPatient = asyncWrapper(async (req, res) => {
   const { firstName, lastName, email, password, role, dateOfBirth, gender, phone, country, address } = req.body;
 
-  const user = await Patient.findOne({ email: email });
+  const user = await User.findOne({ email: email });
   if (user) throw new ApiError("email aleardy existed", 409);
 
-  console.log(req.body)
   // Mongoose Middleware pre save
   const hashedPassword = await bcrypt.hash(password, 10);
   const newPatient = await Patient.create({ firstName, lastName, email, password: hashedPassword, role: 'patient', dateOfBirth, gender, phone, country, address });
@@ -20,20 +20,27 @@ export const registerPatient = asyncWrapper(async (req, res) => {
 })
 
 // NOTE: add patient filters (aggregation)
-export const getDoctorPatients = asyncWrapper(async (req, res) => {
+export const getPatients = asyncWrapper(async (req, res) => {
+  // const pipeline = [{ $match: { doctor: user._id } }, { $lookup: {
+  //   from: 'users', // Patient collection name
+  //   localField: 'patient',
+  //   foreignField: '_id',
+  //   as: 'patient'
+  // }
   const id = req.user._id;
+
   const appointments = await Appointment.find({ doctor: id }).select('patient')
     .populate('patient', 'firstName lastName') // Populate patient details
+
+  if (!appointments[0]) throw new ApiError('there is no patient for this doctor', 404);
+
   res.status(200).json({ status: 'success', data: appointments });
 })
 
 // NOTE: using patientId instead of appointmentId? 
-export const getDoctorPatient = asyncWrapper(async (req, res) => {
+export const getPatient = asyncWrapper(async (req, res) => {
   const { id } = req.user._id;
   const { appointmentId } = req.params;
-
-  const doctor = await Doctor.findById(id);
-  if (!doctor || doctor.role !== 'doctor') throw new ApiError('doctor not found', 404)
 
   const appointment = await Appointment.findOne({_id: appointmentId, doctor: id}).select('patient')
     .populate('patient', 'firstName lastName'); // Populate doctor details
