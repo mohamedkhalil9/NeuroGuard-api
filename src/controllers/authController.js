@@ -18,14 +18,14 @@ export const login = asyncWrapper(async (req, res) => {
 })
 
 export const authenticate = ((req, res, next) => {
-  if (!req.isAuthenticated()) return next(new ApiError('access denied please login', 403));
+  if (!req.isAuthenticated()) return next(new ApiError('unauthorized please login', 401));
   next()
 })
 
 export const authorize = (...roles) => {
   return async (req, res, next) => {
   const role = req.user.role;
-  if (!roles.includes(role)) return next(new ApiError("access denied unauthorized", 403));
+  if (!roles.includes(role)) return next(new ApiError("forbidden you're not allowed", 403));
   next()
   }
 }
@@ -79,7 +79,7 @@ export const resetPassword = asyncWrapper(async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) throw new ApiError('user not found', 404);
-  if (user.otpVerifed == false) throw new ApiError('access denied otp is not verifed', 403)
+  if (user.otpVerifed == false) throw new ApiError('unauthorized otp is not verifed', 401)
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   user.password = hashedPassword;

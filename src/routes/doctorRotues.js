@@ -126,8 +126,8 @@ router.get('/:doctorId', idValidator, getDoctor)
  *     responses:
  *       200:
  *         description: Success 
- *       403:
- *         description: Access Denied please Login 
+ *       401:
+ *         description: unauthorized please Login 
  */
 
  /**

@@ -134,8 +134,8 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *     responses:
  *       200:
  *         description: Successfully Get User Profile 
- *       403:
- *         description: Access Denied please Login 
+ *       401:
+ *         description: unauhtorized please Login 
  */
 
 /**

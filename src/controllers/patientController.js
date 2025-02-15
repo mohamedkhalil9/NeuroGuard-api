@@ -1,7 +1,6 @@
 import Patient from './../models/patientModel.js';
 import User from '../models/userModel.js'
 import Appointment from './../models/appointmentModel.js';
-import Doctor from './../models/doctorModel.js';
 import asyncWrapper from './../middlewares/asyncWrapper.js';
 import ApiError from './../utils/apiError.js';
 import bcrypt from 'bcrypt';
