@@ -6,7 +6,7 @@ import passport from 'passport';
 const router = Router();
  
 router.post('/login', loginValidator, passport.authenticate('local'), login)
-router.get('/logout',authenticate, logout)
+router.get('/logout', authenticate, logout)
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: false }), (req, res) => {

@@ -2,7 +2,15 @@ import mongoose from 'mongoose';
 import User from './userModel.js';
 
 const patientSchema = new mongoose.Schema({
-  medicalHistory: [{ type: String }], // Array of strings for medical history
+  medicalHistory: { 
+    mriUrl: String,
+    strokeStatus: String,
+    strokeRisk: Number
+  }, // Array of strings for medical history
+  favoriteDoctors: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Doctor', 
+  }],
   //slug
 });
 
