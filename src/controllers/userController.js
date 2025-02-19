@@ -40,13 +40,15 @@ export const getUserProfile = asyncWrapper(async (req, res) => {
 export const updateUserProfile = asyncWrapper(async (req, res) => {
   //const { id } = req.params;
   const id = req.user._id;
-  const { role, __t } = req.body;
+  const { role } = req.body;
 
   const user = await User.findById(id);
   if (!user) throw new ApiError(`there is no user with id ${id}`, 404);
+
+  const updatedUser = await User.findOneAndUpdate({_id: id}, {$set: {role: role}}, {new: true})
   
-  const newUser = { role, __t: "Patient" };
-  const updatedUser = await User.findByIdAndUpdate(id, newUser, { new: true });
+  // const newUser = { role, __t: "Patient" };
+  // const updatedUser = await User.findByIdAndUpdate(id, newUser, { new: true });
 
   res.status(200).json({ status: "success", data: { updatedUser }});
 })

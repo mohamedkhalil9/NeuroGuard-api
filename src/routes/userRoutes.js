@@ -16,17 +16,12 @@ router.route('/profile')
   .delete(deleteUserProfile)
 
 /**
- * openapi
- * '/api/v1/users/{userId}':
+ * @openapi
+ * '/api/v1/users/profile':
  *  get:
  *     tags:
  *     - Users
  *     summary: Get a user by userId 
- *     parameters:
- *      - name: userId 
- *        in: path
- *        description: The id of the user
- *        required: true
  *     responses:
  *      200:
  *        description: Fetched Successfully
@@ -39,7 +34,7 @@ router.route('/profile')
  */
 
 /**
- * swagger
+ * @swagger
  * /api/v1/users/profile:
  *  patch:
  *    summary: Update

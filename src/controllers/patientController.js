@@ -38,15 +38,22 @@ export const getPatients = asyncWrapper(async (req, res) => {
 
 // NOTE: using patientId instead of appointmentId? 
 export const getPatient = asyncWrapper(async (req, res) => {
-  const { id } = req.user._id;
-  const { appointmentId } = req.params;
+  // const { id } = req.user._id;
+  // const { appointmentId } = req.params;
+  //
+  // const appointment = await Appointment.findOne({_id: appointmentId, doctor: id}).select('patient')
+  //   .populate('patient', 'firstName lastName'); // Populate doctor details
+  //
+  // if (!appointment) throw new ApiError('appointment not found', 404)
+  //
+  // res.status(200).json({ status: 'success', data: appointment});
+  const { id } = req.params;
 
-  const appointment = await Appointment.findOne({_id: appointmentId, doctor: id}).select('patient')
-    .populate('patient', 'firstName lastName'); // Populate doctor details
+  const patient = await Patient.findById(id);
 
-  if (!appointment) throw new ApiError('appointment not found', 404)
+  if (!patient) throw new ApiError('patient not found', 404)
 
-  res.status(200).json({ status: 'success', data: appointment});
+  res.status(200).json({ status: 'success', data: patient });
 })
 
 

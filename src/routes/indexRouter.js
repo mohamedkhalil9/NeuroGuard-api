@@ -15,7 +15,4 @@ router.use('/doctors', doctorRoutes);
 router.use('/appointments', appointmentRoutes);
 router.use('/storke', strokeRoutes);
 
-// PAYMENT
-// NOTIFICATIONS
-
 export default router;

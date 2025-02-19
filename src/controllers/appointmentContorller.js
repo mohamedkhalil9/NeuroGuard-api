@@ -35,14 +35,14 @@ export const getAppointments = asyncWrapper(async (req, res) => {
 
 export const getAppointment = asyncWrapper(async (req, res) => {
   // const { user } = req;
-  const { appointmentId } = req.params;
+  const { id } = req.params;
 
   // const query = {_id: appointmentId};
   // if (user.role === 'patient') query.patient = user._id;
   // else if (user.role === 'doctor') query.doctor = user._id;
 
   // const appointment = await Appointment.findOne(query)
-  const appointment = await Appointment.findById(appointmentId)
+  const appointment = await Appointment.findById(id)
       .populate('doctor', 'firstName lastName specialization') // Populate doctor details
       .populate("patient", 'firstName lastName'); // Populate patient details (optional)
 

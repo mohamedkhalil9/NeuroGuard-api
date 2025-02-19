@@ -4,7 +4,7 @@ import { emailValidator, loginValidator, otpValidator } from './../validators/va
 import passport from 'passport';
 
 const router = Router();
- 
+
 router.post('/login', loginValidator, passport.authenticate('local'), login)
 router.get('/logout', authenticate, logout)
 
@@ -117,7 +117,7 @@ router.patch('/reset-password', resetPassword)
  *       500:
  *         description: Server Error
  */
- 
+
 /**
  * @swagger
  * /api/v1/auth/verify-otp:

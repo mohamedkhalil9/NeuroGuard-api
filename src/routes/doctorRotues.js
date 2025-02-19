@@ -13,7 +13,7 @@ router.route('/profile')
   .delete(authenticate, authorize('doctor'), deleteDoctorProfile)
 
 router.get('/', getDoctors)
-router.get('/:doctorId', idValidator, getDoctor)
+router.get('/:id', idValidator, getDoctor)
 
 /**
  * @swagger
@@ -102,7 +102,7 @@ router.get('/:doctorId', idValidator, getDoctor)
 
 /**
 * @swagger
-* /api/v1/doctors/{id}:
+* /api/v1/doctors/{doctorId}:
 *   get:
 *     tags: [Doctors]
 *     summary: Get single Doctors

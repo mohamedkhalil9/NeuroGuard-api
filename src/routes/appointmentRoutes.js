@@ -10,8 +10,8 @@ router.route('/')
   .post(appointmentValidator ,authorize('patient'), createAppointment)
   .get(getAppointments)
 
-router.route('/:appointmentId').get(idValidator, getAppointment)
-router.route('/:appointmentId/pay').post(idValidator,authorize('patient'), payAppointment)
+router.route('/:id').get(idValidator, getAppointment)
+router.route('/:id/pay').post(idValidator,authorize('patient'), payAppointment)
 
 /**
  * @swagger

@@ -12,18 +12,16 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true, 
-    unique: true 
+    // unique: true 
   },
   password: {
     type: String,
   },
   role: {
     type: String,
-    enum: ['patient', 'doctor', 'admin'],
-    //required: true
+    enum: ['Patient', 'Doctor', 'Admin'],
+    // required: true,
   },
-  // discriminatorKey: 'role' , // Now "role" is the discriminator key
-  //__t: { type: String, default: 'User' },
   gender: {
     type: String,
     enum: ['Male', 'Female'],
@@ -44,7 +42,7 @@ const userSchema = new mongoose.Schema({
   otpVerifed: Boolean,
   googleId: String,
   createdAt: { type: Date, default: Date.now }
-});
+}, {discriminatorKey: 'role'});
 
 const User = mongoose.model('User', userSchema);
 

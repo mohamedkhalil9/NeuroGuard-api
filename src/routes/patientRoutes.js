@@ -14,8 +14,12 @@ router.route('/profile')
   .patch(authorize('patient'), updatePatientProfile)
   .delete(authorize('patient'), deletePatientProfile)
 
+router.route('/favorites')
+  .post(authorize('patient'), )
+  .get(authorize('patient'), )
+
 router.get('/',authorize('doctor'),  getPatients);
-router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
+router.get('/:id', idValidator, authorize('doctor'), getPatient);
 
 
 
@@ -55,6 +59,7 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *           format: date 
  *         gender:
  *           type: string
+ *           enum: [Male, Female]
  *         phone:
  *           type: string
  *         country:
@@ -63,7 +68,7 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *         firstName: Ahmed
  *         lastName: Mahmoud
  *         email: ahmedmahmoud4@email.com 
- *         password: '1234'
+ *         password: a12345
  *         dateOfBirth: 2000-10-10 
  *         gender: Male
  *         phone: 010001000
