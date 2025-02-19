@@ -12,7 +12,7 @@ export const registerDoctor = asyncWrapper(async (req, res) => {
   if (user) throw new ApiError("email aleardy existed", 409);
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newDoctor = await Doctor.create({ firstName, lastName, email, password: hashedPassword, role: 'Doctor', dateOfBirth, gender, phone, country, address });
+  const newDoctor = await Doctor.create({ firstName, lastName, email, password: hashedPassword, role: 'doctor', dateOfBirth, gender, phone, country, address });
 
   res.status(201).json({ status: "success", data: newDoctor });
 })

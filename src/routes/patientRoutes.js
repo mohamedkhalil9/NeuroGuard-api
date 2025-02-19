@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { registerPatient, getPatientProfile, updatePatientProfile, deletePatientProfile, getPatients, getPatient } from '../controllers/patientController.js'
+import { registerPatient, getPatientProfile, updatePatientProfile, deletePatientProfile, getPatients, getPatient, addFavoriteDoctor, getFavoriteDoctors } from '../controllers/patientController.js'
 import { authenticate, authorize } from '../controllers/authController.js';
 import { registerValidator, idValidator } from '../validators/validators.js'
 
@@ -15,12 +15,11 @@ router.route('/profile')
   .delete(authorize('patient'), deletePatientProfile)
 
 router.route('/favorites')
-  .post(authorize('patient'), )
-  .get(authorize('patient'), )
+  .post(authorize('patient'), addFavoriteDoctor)
+  .get(authorize('patient'), getFavoriteDoctors)
 
 router.get('/',authorize('doctor'),  getPatients);
 router.get('/:id', idValidator, authorize('doctor'), getPatient);
-
 
 
 /**
@@ -171,6 +170,43 @@ router.get('/:id', idValidator, authorize('doctor'), getPatient);
  *     responses:
  *       200:
  *         description: Successfully Deleted User Profile 
+ *       500:
+ *         description: Server Error 
+ */
+
+/**
+ * @swagger
+ * /api/v1/patients/favorites:
+ *   post:
+ *     tags: [Patients]
+ *     summary: Add favorite doctor 
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              required:
+ *                - doctorId 
+ *              properties:
+ *                doctorId:
+ *                  type: string
+ *     responses:
+ *       200:
+ *         description: Successfully added favorite doctor
+ *       500:
+ *         description: Server Error 
+ */
+
+/**
+ * @swagger
+ * /api/v1/patients/favorites:
+ *   get:
+ *     tags: [Patients]
+ *     summary: get favorite doctors
+ *     responses:
+ *       200:
+ *         description: Successfully get favorite doctors
  *       500:
  *         description: Server Error 
  */

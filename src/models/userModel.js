@@ -12,15 +12,15 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true, 
-    // unique: true 
+    unique: true 
   },
   password: {
     type: String,
   },
   role: {
     type: String,
-    enum: ['Patient', 'Doctor', 'Admin'],
-    // required: true,
+    enum: ['patient', 'doctor', 'admin'],
+    required: true,
   },
   gender: {
     type: String,
@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
   otpVerifed: Boolean,
   googleId: String,
   createdAt: { type: Date, default: Date.now }
-}, {discriminatorKey: 'role'});
+});
 
 const User = mongoose.model('User', userSchema);
 

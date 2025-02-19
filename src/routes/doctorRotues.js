@@ -15,6 +15,7 @@ router.route('/profile')
 router.get('/', getDoctors)
 router.get('/:id', idValidator, getDoctor)
 
+
 /**
  * @swagger
  * tags:

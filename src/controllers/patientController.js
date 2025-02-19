@@ -84,3 +84,30 @@ export const deletePatientProfile = asyncWrapper(async (req, res) => {
   if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
   res.status(200).json({ status: "success", data: null });
 })
+
+export const addFavoriteDoctor = asyncWrapper(async (req, res) => {
+  const id = req.user._id;
+  const { doctorId } = req.body;
+
+  const patient = await Patient.findById(id);
+  if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
+
+  patient.favoriteDoctors.forEach(e=> {
+   if (e == doctorId) throw new ApiError('doctor already favorite', 400)
+  });
+  const updatedPatient = await Patient.findByIdAndUpdate(id,{ $push: { favoriteDoctors: doctorId } },{ new: true }).select('favoriteDoctors');
+  
+  res.status(200).json({ status: "success", data: { updatedPatient } });
+})
+
+export const getFavoriteDoctors = asyncWrapper(async (req, res) => {
+  const id = req.user._id;
+
+  const patient = await Patient.findById(id).select('favoriteDoctors');
+  if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
+
+  if (!patient.favoriteDoctors[0]) throw new ApiError('there is no favorite Doctors for this patient');
+  
+  res.status(200).json({ status: "success", data: { patient } });
+
+})
