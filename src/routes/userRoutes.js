@@ -1,7 +1,13 @@
-import { Router } from 'express';
-import { getUsers, getUser, getUserProfile, updateUserProfile, deleteUserProfile } from '../controllers/userController.js';
-import { idValidator } from './../validators/validators.js';
-import { authenticate } from '../controllers/authController.js';
+import { Router } from "express";
+import {
+  getUsers,
+  getUser,
+  getUserProfile,
+  updateUserProfile,
+  deleteUserProfile,
+} from "../controllers/userController.js";
+import { idValidator } from "./../validators/validators.js";
+import { authenticate } from "../controllers/authController.js";
 
 const router = Router();
 
@@ -10,10 +16,11 @@ router.use(authenticate);
 //router.get('/', getUsers)
 //router.get('/:id', idValidator, getUser)
 
-router.route('/profile')
+router
+  .route("/profile")
   .get(getUserProfile)
   .patch(updateUserProfile)
-  .delete(deleteUserProfile)
+  .delete(deleteUserProfile);
 
 /**
  * @openapi
@@ -21,7 +28,7 @@ router.route('/profile')
  *  get:
  *     tags:
  *     - Users
- *     summary: Get a user by userId 
+ *     summary: Get a user by userId
  *     responses:
  *      200:
  *        description: Fetched Successfully

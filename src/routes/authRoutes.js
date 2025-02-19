@@ -1,36 +1,54 @@
-import { Router } from 'express';
-import { login, logout, forgotPassword, verifyOtp, resetPassword, authenticate } from './../controllers/authController.js';
-import { emailValidator, loginValidator, otpValidator } from './../validators/validators.js';
-import passport from 'passport';
+import { Router } from "express";
+import {
+  login,
+  logout,
+  forgotPassword,
+  verifyOtp,
+  resetPassword,
+  authenticate,
+} from "./../controllers/authController.js";
+import {
+  emailValidator,
+  loginValidator,
+  otpValidator,
+} from "./../validators/validators.js";
+import passport from "passport";
 
 const router = Router();
 
-router.post('/login', loginValidator, passport.authenticate('local'), login)
-router.get('/logout', authenticate, logout)
+router.post("/login", loginValidator, passport.authenticate("local"), login);
+router.get("/logout", authenticate, logout);
 
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: false }), (req, res) => {
-  res.redirect('http://localhost:5173')
-})
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] }),
+);
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: false }),
+  (req, res) => {
+    res.redirect("http://localhost:5173");
+  },
+);
 
-router.post('/forgot-password', emailValidator, forgotPassword)
-router.post('/verify-otp', otpValidator, verifyOtp)
-router.patch('/reset-password', resetPassword)
+router.post("/forgot-password", emailValidator, forgotPassword);
+router.post("/verify-otp", otpValidator, verifyOtp);
+router.patch("/reset-password", resetPassword);
 
 /**
  * @swagger
  * tags:
- *   name: Auth 
+ *   name: Auth
  */
 
 /**
  * @swagger
  * components:
  *   schemas:
-*     Login:
+ *     Login:
  *       type: object
  *       required:
- *         - email 
+ *         - email
  *         - password
  *       properties:
  *         email:
@@ -38,7 +56,7 @@ router.patch('/reset-password', resetPassword)
  *         password:
  *           type: string
  *       example:
- *         email: ahmedmahmoud4@email.com 
+ *         email: ahmedmahmoud4@email.com
  *         password: '1234'
  */
 
@@ -56,11 +74,11 @@ router.patch('/reset-password', resetPassword)
  *              $ref: '#/components/schemas/Login'
  *     responses:
  *       200:
- *         description: User Logged in Successfully 
+ *         description: User Logged in Successfully
  *       404:
- *         description: User Not Found 
+ *         description: User Not Found
  *       401:
- *         description: Invalid Email Or Password 
+ *         description: Invalid Email Or Password
  *       500:
  *         description: Server Error
  */
@@ -73,7 +91,7 @@ router.patch('/reset-password', resetPassword)
  *     summary: Login or Register a user with google
  *     responses:
  *       200:
- *         description: User Logged in Successfully 
+ *         description: User Logged in Successfully
  *       500:
  *         description: Server Error
  */
@@ -83,10 +101,10 @@ router.patch('/reset-password', resetPassword)
  * /api/v1/auth/logout:
  *   get:
  *     tags: [Auth]
- *     summary: User Logout 
+ *     summary: User Logout
  *     responses:
  *       200:
- *         description: Logged out Successfully 
+ *         description: Logged out Successfully
  *       500:
  *         description: Server Error
  */
@@ -96,7 +114,7 @@ router.patch('/reset-password', resetPassword)
  * /api/v1/auth/forgot-password:
  *   post:
  *     tags: [Auth]
- *     summary: User Forgot Password 
+ *     summary: User Forgot Password
  *     requestBody:
  *        required: true
  *        content:
@@ -106,14 +124,14 @@ router.patch('/reset-password', resetPassword)
  *              required:
  *                - email
  *              properties:
- *                email: 
+ *                email:
  *                  type: string
  *                  default: someemail@mail.com
  *     responses:
  *       200:
- *         description: Email sent with otp Successfully 
+ *         description: Email sent with otp Successfully
  *       404:
- *         description: User Not Found 
+ *         description: User Not Found
  *       500:
  *         description: Server Error
  */
@@ -132,17 +150,17 @@ router.patch('/reset-password', resetPassword)
  *              type: object
  *              required:
  *                - email
- *                - otp 
+ *                - otp
  *              properties:
- *                email: 
+ *                email:
  *                  type: string
  *                  default: username@email.com
  *                otp:
  *                  type: string
- *                  default: 1234 
+ *                  default: 1234
  *     responses:
  *       200:
- *         description: otp verified Successfully 
+ *         description: otp verified Successfully
  *       409:
  *         description: Otp is invalid
  *       500:
@@ -154,7 +172,7 @@ router.patch('/reset-password', resetPassword)
  * /api/v1/auth/reset-password:
  *   patch:
  *     tags: [Auth]
- *     summary: Reset User's Password 
+ *     summary: Reset User's Password
  *     requestBody:
  *        required: true
  *        content:
@@ -162,24 +180,24 @@ router.patch('/reset-password', resetPassword)
  *            schema:
  *              type: object
  *              required:
- *                - email 
+ *                - email
  *                - newPassword
  *                - confirmNewPassword
  *              properties:
- *                email: 
+ *                email:
  *                  type: string
- *                  default: someemail@mail.com 
- *                newPassword: 
+ *                  default: someemail@mail.com
+ *                newPassword:
  *                  type: string
  *                  default: d2341
- *                confirmNewPassword: 
+ *                confirmNewPassword:
  *                  type: string
  *                  default: s2342s
  *     responses:
  *       200:
- *         description: Password updated Successfully 
+ *         description: Password updated Successfully
  *       400:
- *         description: access denied otp is not verified 
+ *         description: access denied otp is not verified
  *       500:
  *         description: Server Error
  */

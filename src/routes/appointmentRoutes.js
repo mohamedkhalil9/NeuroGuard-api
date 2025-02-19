@@ -1,22 +1,33 @@
-import { Router } from 'express';
-import { getAppointments, getAppointment, createAppointment, payAppointment } from './../controllers/appointmentContorller.js';
-import { idValidator, appointmentValidator } from './../validators/validators.js';
-import { authenticate, authorize } from '../controllers/authController.js';
+import { Router } from "express";
+import {
+  getAppointments,
+  getAppointment,
+  createAppointment,
+  payAppointment,
+} from "./../controllers/appointmentContorller.js";
+import {
+  idValidator,
+  appointmentValidator,
+} from "./../validators/validators.js";
+import { authenticate, authorize } from "../controllers/authController.js";
 
 const router = Router();
 
-router.use(authenticate)
-router.route('/')
-  .post(appointmentValidator ,authorize('patient'), createAppointment)
-  .get(getAppointments)
+router.use(authenticate);
+router
+  .route("/")
+  .post(appointmentValidator, authorize("patient"), createAppointment)
+  .get(getAppointments);
 
-router.route('/:id').get(idValidator, getAppointment)
-router.route('/:id/pay').post(idValidator,authorize('patient'), payAppointment)
+router.route("/:id").get(idValidator, getAppointment);
+router
+  .route("/:id/pay")
+  .post(idValidator, authorize("patient"), payAppointment);
 
 /**
  * @swagger
  * tags:
- *   name: Appointments 
+ *   name: Appointments
  */
 
 /**
@@ -26,10 +37,10 @@ router.route('/:id/pay').post(idValidator,authorize('patient'), payAppointment)
  *     Appointment:
  *       type: object
  *       required:
- *         - date 
- *         - time 
- *         - patient 
- *         - doctor 
+ *         - date
+ *         - time
+ *         - patient
+ *         - doctor
  *       properties:
  *         date:
  *           type: string
@@ -55,7 +66,7 @@ router.route('/:id/pay').post(idValidator,authorize('patient'), payAppointment)
  * /api/v1/appointments:
  *   post:
  *     tags: [Appointments]
- *     summary: Book New Appointment 
+ *     summary: Book New Appointment
  *     requestBody:
  *        required: true
  *        content:
@@ -64,7 +75,7 @@ router.route('/:id/pay').post(idValidator,authorize('patient'), payAppointment)
  *              $ref: '#/components/schemas/Appointment'
  *     responses:
  *       201:
- *         description: Appointment Created Successfully 
+ *         description: Appointment Created Successfully
  *       500:
  *         description: Server Error
  */
@@ -74,7 +85,7 @@ router.route('/:id/pay').post(idValidator,authorize('patient'), payAppointment)
  * '/api/v1/appointments/{appointmentId}/pay':
  *  post:
  *     tags: [Appointments]
- *     summary: Appointment Payment 
+ *     summary: Appointment Payment
  */
 
 /**
@@ -85,7 +96,7 @@ router.route('/:id/pay').post(idValidator,authorize('patient'), payAppointment)
  *     summary: Get Appointments
  *     responses:
  *       200:
- *         description: Success 
+ *         description: Success
  *       500:
  *         description: Server Error
  */
@@ -102,7 +113,7 @@ router.route('/:id/pay').post(idValidator,authorize('patient'), payAppointment)
  *         required: true
  *     responses:
  *       200:
- *         description: Success 
+ *         description: Success
  *       500:
  *         description: Server Error
  */
