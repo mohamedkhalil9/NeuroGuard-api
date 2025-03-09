@@ -1,9 +1,6 @@
 import { Router } from "express";
 import {
-  prediction,
-  uploadImage,
-  chatbot,
-  uploadPdf,
+  prediction,uploadImage,chatbot,uploadPdf,srganPrediction , denoisingPrediction ,cycleganPrediction
 } from "./../controllers/strokeController.js";
 import { authenticate } from "../controllers/authController.js";
 
@@ -15,6 +12,9 @@ router.post("/predict", prediction);
 router.post("/upload-image", uploadImage);
 router.post("/chat", chatbot);
 router.post("/upload-pdf", uploadPdf);
+router.post('/predict/srgan', srganPrediction)
+router.post('/predict/denoising', denoisingPrediction)
+router.post('/predict/cyclegan', cycleganPrediction)
 
 /**
  * @swagger

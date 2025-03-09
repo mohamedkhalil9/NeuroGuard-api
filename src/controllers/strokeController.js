@@ -5,23 +5,25 @@ import multer from "multer";
 import FormData from 'form-data';
 
 const BASE_URL = "http://127.0.0.1:8000";
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 export const prediction = asyncWrapper(async (req, res) => {
-  
-  const response = await axios.post(`${BASE_URL}/predict/`, req.body);
-  
-  res.status(200).json({ status: "success", data: response.data });
-  
+  try {
+    const response = await axios.post(`${BASE_URL}/predict/`, req.body);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: error.response?.data || error.message || "Internal Server Error" });
+  }
 });
 
 export const uploadImage = [
   upload.single("file"),
   asyncWrapper(async (req, res) => {
-    
-      if (!req.file) throw new ApiError("No file uploaded", 400);
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
 
       const formData = new FormData();
       formData.append("file", req.file.buffer, {
@@ -35,26 +37,29 @@ export const uploadImage = [
         },
       });
 
-      res.status(200).json({ status: "success", data: response.data });
-    
+      res.json(response.data);
+    } catch (error) {
+      res.status(500).json({ error: error.response?.data || error.message || "Internal Server Error" });
     }
-  ),
+  }),
 ];
 
 export const chatbot = asyncWrapper(async (req, res) => {
-  
+  try {
     const response = await axios.post(`${BASE_URL}/chat/`, req.body);
-    res.status(200).json({ status: "success", data: response.data });
-
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: error.response?.data || error.message || "Internal Server Error" });
+  }
 });
 
 export const uploadPdf = [
   upload.single("file"),
   asyncWrapper(async (req, res) => {
-   
-
-      if (!req.file) throw new ApiError("No file uploaded", 400);
-
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
 
       const formData = new FormData();
       formData.append("file", req.file.buffer, req.file.originalname);
@@ -65,7 +70,150 @@ export const uploadPdf = [
         },
       });
 
-      res.status(200).json({ status: "success", data: response.data });
-  
+      res.json(response.data);
+    } catch (error) {
+      res.status(500).json({ error: error.response?.data || error.message || "Internal Server Error" });
+    }
+  }),
+];
+
+
+
+// نقطة نهاية SRGAN
+export const srganPrediction = [
+  upload.single("file"),
+  asyncWrapper(async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+      // المرحلة الأولى: استدعاء نموذج SRGAN
+      const formData = new FormData();
+      formData.append("file", req.file.buffer, {
+        filename: req.file.originalname,
+        contentType: req.file.mimetype,
+      });
+      const modelResponse = await axios.post(`${BASE_URL}/predict/srgan/`, formData, {
+        headers: formData.getHeaders(),
+        responseType: "arraybuffer",
+      });
+      const modelImageBuffer = Buffer.from(modelResponse.data, "binary");
+
+      // المرحلة الثانية: إرسال الصورة الناتجة إلى upload-image/
+      const formData2 = new FormData();
+      formData2.append("file", modelImageBuffer, {
+        filename: "model_output.png",
+        contentType: "image/png",
+      });
+      const detectionResponse = await axios.post(`${BASE_URL}/upload-image/`, formData2, {
+        headers: formData2.getHeaders(),
+        responseType: "json",
+      });
+
+      // تحويل الصورة الناتجة إلى base64 لإرسالها (يمكن تخزينها في قاعدة البيانات)
+      const base64Image = modelImageBuffer.toString("base64");
+
+      res.json({
+        image: base64Image,
+        detection: detectionResponse.data,
+        message: "Success: SRGAN output processed and detection completed.",
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: error.response?.data || error.message || "Internal Server Error",
+      });
+    }
+  }),
+];
+
+// نقطة نهاية Denoising GAN
+export const denoisingPrediction = [
+  upload.single("file"),
+  asyncWrapper(async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+      // المرحلة الأولى: استدعاء نموذج Denoising GAN
+      const formData = new FormData();
+      formData.append("file", req.file.buffer, {
+        filename: req.file.originalname,
+        contentType: req.file.mimetype,
+      });
+      const modelResponse = await axios.post(`${BASE_URL}/predict/denoising/`, formData, {
+        headers: formData.getHeaders(),
+        responseType: "arraybuffer",
+      });
+      const modelImageBuffer = Buffer.from(modelResponse.data, "binary");
+
+      // المرحلة الثانية: إرسال الصورة الناتجة إلى upload-image/
+      const formData2 = new FormData();
+      formData2.append("file", modelImageBuffer, {
+        filename: "model_output.png",
+        contentType: "image/png",
+      });
+      const detectionResponse = await axios.post(`${BASE_URL}/upload-image/`, formData2, {
+        headers: formData2.getHeaders(),
+        responseType: "json",
+      });
+
+      const base64Image = modelImageBuffer.toString("base64");
+
+      res.json({
+        image: base64Image,
+        detection: detectionResponse.data,
+        message: "Success: Denoising GAN output processed and detection completed.",
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: error.response?.data || error.message || "Internal Server Error",
+      });
+    }
+  }),
+];
+
+// نقطة نهاية CycleGAN
+export const cycleganPrediction = [
+  upload.single("file"),
+  asyncWrapper(async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+      // المرحلة الأولى: استدعاء نموذج CycleGAN
+      const formData = new FormData();
+      formData.append("file", req.file.buffer, {
+        filename: req.file.originalname,
+        contentType: req.file.mimetype,
+      });
+      const modelResponse = await axios.post(`${BASE_URL}/predict/cyclegan/`, formData, {
+        headers: formData.getHeaders(),
+        responseType: "arraybuffer",
+      });
+      const modelImageBuffer = Buffer.from(modelResponse.data, "binary");
+
+      // المرحلة الثانية: إرسال الصورة الناتجة إلى upload-image/
+      const formData2 = new FormData();
+      formData2.append("file", modelImageBuffer, {
+        filename: "model_output.png",
+        contentType: "image/png",
+      });
+      const detectionResponse = await axios.post(`${BASE_URL}/upload-image/`, formData2, {
+        headers: formData2.getHeaders(),
+        responseType: "json",
+      });
+
+      const base64Image = modelImageBuffer.toString("base64");
+
+      res.json({
+        image: base64Image,
+        detection: detectionResponse.data,
+        message: "Success: CycleGAN output processed and detection completed.",
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: error.response?.data || error.message || "Internal Server Error",
+      });
+    }
   }),
 ];
