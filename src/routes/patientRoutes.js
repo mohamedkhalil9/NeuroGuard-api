@@ -1,28 +1,41 @@
-import { Router } from 'express';
-import { registerPatient, getPatientProfile, updatePatientProfile, deletePatientProfile, getPatients, getPatient } from '../controllers/patientController.js'
-import { authenticate, authorize } from '../controllers/authController.js';
-import { registerValidator, idValidator } from '../validators/validators.js'
+import { Router } from "express";
+import {
+  registerPatient,
+  getPatientProfile,
+  updatePatientProfile,
+  deletePatientProfile,
+  getPatients,
+  getPatient,
+  addFavoriteDoctor,
+  getFavoriteDoctors,
+} from "../controllers/patientController.js";
+import { authenticate, authorize } from "../controllers/authController.js";
+import { registerValidator, idValidator } from "../validators/validators.js";
 
 const router = Router();
- 
-router.post('/register',registerValidator, registerPatient)
 
-router.use(authenticate)
+router.post("/register", registerValidator, registerPatient);
 
-router.route('/profile')
-  .get(authorize('patient'), getPatientProfile)
-  .patch(authorize('patient'), updatePatientProfile)
-  .delete(authorize('patient'), deletePatientProfile)
+router.use(authenticate);
 
-router.get('/',authorize('doctor'),  getPatients);
-router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
+router
+  .route("/profile")
+  .get(authorize("patient"), getPatientProfile)
+  .patch(authorize("patient"), updatePatientProfile)
+  .delete(authorize("patient"), deletePatientProfile);
 
+router
+  .route("/favorites")
+  .post(authorize("patient"), addFavoriteDoctor)
+  .get(authorize("patient"), getFavoriteDoctors);
 
+router.get("/", authorize("doctor"), getPatients);
+router.get("/:id", idValidator, authorize("doctor"), getPatient);
 
 /**
  * @swagger
  * tags:
- *   name: Patients 
+ *   name: Patients
  */
 
 /**
@@ -34,7 +47,7 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *       required:
  *         - firstName
  *         - lastName
- *         - email 
+ *         - email
  *         - password
  *         - dateOfBirth
  *         - gender
@@ -50,11 +63,12 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *           type: string
  *         password:
  *           type: string
- *         dateOfBirth: 
+ *         dateOfBirth:
  *           type: string
- *           format: date 
+ *           format: date
  *         gender:
  *           type: string
+ *           enum: [Male, Female]
  *         phone:
  *           type: string
  *         country:
@@ -62,9 +76,9 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *       example:
  *         firstName: Ahmed
  *         lastName: Mahmoud
- *         email: ahmedmahmoud4@email.com 
- *         password: '1234'
- *         dateOfBirth: 2000-10-10 
+ *         email: ahmedmahmoud4@email.com
+ *         password: a12345
+ *         dateOfBirth: 2000-10-10
  *         gender: Male
  *         phone: 010001000
  *         country: egypt
@@ -75,7 +89,7 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  * /api/v1/patients/register:
  *   post:
  *     tags: [Patients]
- *     summary: Register Patients 
+ *     summary: Register Patients
  *     requestBody:
  *        required: true
  *        content:
@@ -84,13 +98,13 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *              $ref: '#/components/schemas/Patient'
  *     responses:
  *       201:
- *         description: Patient Created Successfully 
+ *         description: Patient Created Successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Patient'
  *       409:
- *         description: User Already Exists 
+ *         description: User Already Exists
  *       500:
  *         description: Server Error
  */
@@ -100,10 +114,10 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  * /api/v1/patients:
  *   get:
  *     tags: [Patients]
- *     summary: Get Doctor patients 
+ *     summary: Get Doctor patients
  *     responses:
  *       200:
- *         description: Success 
+ *         description: Success
  *       500:
  *         description: Server Error
  */
@@ -115,12 +129,12 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *     tags: [Patients]
  *     summary: Get Doctor single Patient
  *     parameters:
- *       - name: patientId 
+ *       - name: patientId
  *         in: path
  *         required: true
  *     responses:
  *       200:
- *         description: Success 
+ *         description: Success
  *       500:
  *         description: Server Error
  */
@@ -133,9 +147,9 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *     summary: Get Patient Profile
  *     responses:
  *       200:
- *         description: Successfully Get User Profile 
+ *         description: Successfully Get User Profile
  *       401:
- *         description: unauhtorized please Login 
+ *         description: unauhtorized please Login
  */
 
 /**
@@ -152,9 +166,9 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *              $ref: '#/components/schemas/Patient'
  *     responses:
  *       200:
- *         description: Successfully Updated User Profile 
+ *         description: Successfully Updated User Profile
  *       500:
- *         description: Server Error 
+ *         description: Server Error
  */
 
 /**
@@ -165,9 +179,46 @@ router.get('/:patientId',idValidator, authorize('doctor'), getPatient);
  *     summary: Delete Patient Profile
  *     responses:
  *       200:
- *         description: Successfully Deleted User Profile 
+ *         description: Successfully Deleted User Profile
  *       500:
- *         description: Server Error 
+ *         description: Server Error
+ */
+
+/**
+ * @swagger
+ * /api/v1/patients/favorites:
+ *   post:
+ *     tags: [Patients]
+ *     summary: Add favorite doctor
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              required:
+ *                - doctorId
+ *              properties:
+ *                doctorId:
+ *                  type: string
+ *     responses:
+ *       200:
+ *         description: Successfully added favorite doctor
+ *       500:
+ *         description: Server Error
+ */
+
+/**
+ * @swagger
+ * /api/v1/patients/favorites:
+ *   get:
+ *     tags: [Patients]
+ *     summary: get favorite doctors
+ *     responses:
+ *       200:
+ *         description: Successfully get favorite doctors
+ *       500:
+ *         description: Server Error
  */
 
 export default router;

@@ -1,7 +1,13 @@
-import { Router } from 'express';
-import { getUsers, getUser, getUserProfile, updateUserProfile, deleteUserProfile } from '../controllers/userController.js';
-import { idValidator } from './../validators/validators.js';
-import { authenticate } from '../controllers/authController.js';
+import { Router } from "express";
+import {
+  getUsers,
+  getUser,
+  getUserProfile,
+  updateUserProfile,
+  deleteUserProfile,
+} from "../controllers/userController.js";
+import { idValidator } from "./../validators/validators.js";
+import { authenticate } from "../controllers/authController.js";
 
 const router = Router();
 
@@ -10,23 +16,19 @@ router.use(authenticate);
 //router.get('/', getUsers)
 //router.get('/:id', idValidator, getUser)
 
-router.route('/profile')
+router
+  .route("/profile")
   .get(getUserProfile)
   .patch(updateUserProfile)
-  .delete(deleteUserProfile)
+  .delete(deleteUserProfile);
 
 /**
- * openapi
- * '/api/v1/users/{userId}':
+ * @openapi
+ * '/api/v1/users/profile':
  *  get:
  *     tags:
  *     - Users
- *     summary: Get a user by userId 
- *     parameters:
- *      - name: userId 
- *        in: path
- *        description: The id of the user
- *        required: true
+ *     summary: Get a user by userId
  *     responses:
  *      200:
  *        description: Fetched Successfully
@@ -39,7 +41,7 @@ router.route('/profile')
  */
 
 /**
- * swagger
+ * @swagger
  * /api/v1/users/profile:
  *  patch:
  *    summary: Update

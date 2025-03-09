@@ -1,22 +1,44 @@
-import Patient from './../models/patientModel.js';
-import User from '../models/userModel.js'
-import Appointment from './../models/appointmentModel.js';
-import asyncWrapper from './../middlewares/asyncWrapper.js';
-import ApiError from './../utils/apiError.js';
-import bcrypt from 'bcrypt';
+import Patient from "./../models/patientModel.js";
+import User from "../models/userModel.js";
+import Appointment from "./../models/appointmentModel.js";
+import asyncWrapper from "./../middlewares/asyncWrapper.js";
+import ApiError from "./../utils/apiError.js";
+import bcrypt from "bcrypt";
 
 export const registerPatient = asyncWrapper(async (req, res) => {
-  const { firstName, lastName, email, password, role, dateOfBirth, gender, phone, country, address } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    role,
+    dateOfBirth,
+    gender,
+    phone,
+    country,
+    address,
+  } = req.body;
 
   const user = await User.findOne({ email: email });
   if (user) throw new ApiError("email aleardy existed", 409);
 
   // Mongoose Middleware pre save
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newPatient = await Patient.create({ firstName, lastName, email, password: hashedPassword, role: 'patient', dateOfBirth, gender, phone, country, address });
+  const newPatient = await Patient.create({
+    firstName,
+    lastName,
+    email,
+    password: hashedPassword,
+    role: "patient",
+    dateOfBirth,
+    gender,
+    phone,
+    country,
+    address,
+  });
 
   res.status(201).json({ status: "success", data: newPatient });
-})
+});
 
 // NOTE: add patient filters (aggregation)
 export const getPatients = asyncWrapper(async (req, res) => {
@@ -28,52 +50,93 @@ export const getPatients = asyncWrapper(async (req, res) => {
   // }
   const id = req.user._id;
 
-  const appointments = await Appointment.find({ doctor: id }).select('patient')
-    .populate('patient', 'firstName lastName') // Populate patient details
+  const appointments = await Appointment.find({ doctor: id })
+    .select("patient")
+    .populate("patient", "firstName lastName"); // Populate patient details
 
-  if (!appointments[0]) throw new ApiError('there is no patient for this doctor', 404);
+  if (!appointments[0])
+    throw new ApiError("there is no patient for this doctor", 404);
 
-  res.status(200).json({ status: 'success', data: appointments });
-})
+  res.status(200).json({ status: "success", data: appointments });
+});
 
-// NOTE: using patientId instead of appointmentId? 
+// NOTE: using patientId instead of appointmentId?
 export const getPatient = asyncWrapper(async (req, res) => {
-  const { id } = req.user._id;
-  const { appointmentId } = req.params;
+  // const { id } = req.user._id;
+  // const { appointmentId } = req.params;
+  //
+  // const appointment = await Appointment.findOne({_id: appointmentId, doctor: id}).select('patient')
+  //   .populate('patient', 'firstName lastName'); // Populate doctor details
+  //
+  // if (!appointment) throw new ApiError('appointment not found', 404)
+  //
+  // res.status(200).json({ status: 'success', data: appointment});
+  const { id } = req.params;
 
-  const appointment = await Appointment.findOne({_id: appointmentId, doctor: id}).select('patient')
-    .populate('patient', 'firstName lastName'); // Populate doctor details
+  const patient = await Patient.findById(id);
 
-  if (!appointment) throw new ApiError('appointment not found', 404)
+  if (!patient) throw new ApiError("patient not found", 404);
 
-  res.status(200).json({ status: 'success', data: appointment});
-})
-
+  res.status(200).json({ status: "success", data: patient });
+});
 
 export const getPatientProfile = asyncWrapper(async (req, res) => {
   const id = req.user._id;
 
-  const patient = await Patient.findById(id).select('-password');
+  const patient = await Patient.findById(id).select("-password");
   if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
-  
+
   res.status(200).json({ status: "success", data: { patient } });
-})
+});
 
 export const updatePatientProfile = asyncWrapper(async (req, res) => {
   const id = req.user._id;
 
   const patient = await Patient.findById(id);
   if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
-  
-  const newPatient = { ...req.body };
-  const updatedPatient = await Patient.findByIdAndUpdate(id, newPatient, { new: true });
 
-  res.status(200).json({ status: "success", data: { updatedPatient }});
-})
+  const newPatient = { ...req.body };
+  const updatedPatient = await Patient.findByIdAndUpdate(id, newPatient, {
+    new: true,
+  });
+
+  res.status(200).json({ status: "success", data: { updatedPatient } });
+});
 
 export const deletePatientProfile = asyncWrapper(async (req, res) => {
   const id = req.user._id;
   const patient = await Patient.findByIdAndDelete(id);
   if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
   res.status(200).json({ status: "success", data: null });
-})
+});
+
+export const addFavoriteDoctor = asyncWrapper(async (req, res) => {
+  const id = req.user._id;
+  const { doctorId } = req.body;
+
+  const patient = await Patient.findById(id);
+  if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
+
+  patient.favoriteDoctors.forEach((e) => {
+    if (e == doctorId) throw new ApiError("doctor already favorite", 400);
+  });
+  const updatedPatient = await Patient.findByIdAndUpdate(
+    id,
+    { $push: { favoriteDoctors: doctorId } },
+    { new: true },
+  ).select("favoriteDoctors");
+
+  res.status(200).json({ status: "success", data: { updatedPatient } });
+});
+
+export const getFavoriteDoctors = asyncWrapper(async (req, res) => {
+  const id = req.user._id;
+
+  const patient = await Patient.findById(id).select("favoriteDoctors");
+  if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
+
+  if (!patient.favoriteDoctors[0])
+    throw new ApiError("there is no favorite Doctors for this patient");
+
+  res.status(200).json({ status: "success", data: { patient } });
+});
