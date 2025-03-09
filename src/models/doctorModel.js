@@ -7,7 +7,7 @@ const doctorSchema = new mongoose.Schema({
     //required: true
   },
   availableSlots: [{ type: Date }], // array of available time slots
-  appointmentFee: Number,
+  appointmentFee: Number, //  this is salary
   //slug
 });
 
