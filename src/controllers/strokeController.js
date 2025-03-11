@@ -79,7 +79,6 @@ export const uploadPdf = [
 
 
 
-// نقطة نهاية SRGAN
 export const srganPrediction = [
   upload.single("file"),
   asyncWrapper(async (req, res) => {
@@ -87,7 +86,6 @@ export const srganPrediction = [
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
       }
-      // المرحلة الأولى: استدعاء نموذج SRGAN
       const formData = new FormData();
       formData.append("file", req.file.buffer, {
         filename: req.file.originalname,
@@ -99,7 +97,6 @@ export const srganPrediction = [
       });
       const modelImageBuffer = Buffer.from(modelResponse.data, "binary");
 
-      // المرحلة الثانية: إرسال الصورة الناتجة إلى upload-image/
       const formData2 = new FormData();
       formData2.append("file", modelImageBuffer, {
         filename: "model_output.png",
@@ -110,7 +107,6 @@ export const srganPrediction = [
         responseType: "json",
       });
 
-      // تحويل الصورة الناتجة إلى base64 لإرسالها (يمكن تخزينها في قاعدة البيانات)
       const base64Image = modelImageBuffer.toString("base64");
 
       res.json({
@@ -126,7 +122,6 @@ export const srganPrediction = [
   }),
 ];
 
-// نقطة نهاية Denoising GAN
 export const denoisingPrediction = [
   upload.single("file"),
   asyncWrapper(async (req, res) => {
@@ -134,7 +129,6 @@ export const denoisingPrediction = [
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
       }
-      // المرحلة الأولى: استدعاء نموذج Denoising GAN
       const formData = new FormData();
       formData.append("file", req.file.buffer, {
         filename: req.file.originalname,
@@ -146,7 +140,6 @@ export const denoisingPrediction = [
       });
       const modelImageBuffer = Buffer.from(modelResponse.data, "binary");
 
-      // المرحلة الثانية: إرسال الصورة الناتجة إلى upload-image/
       const formData2 = new FormData();
       formData2.append("file", modelImageBuffer, {
         filename: "model_output.png",
@@ -172,7 +165,6 @@ export const denoisingPrediction = [
   }),
 ];
 
-// نقطة نهاية CycleGAN
 export const cycleganPrediction = [
   upload.single("file"),
   asyncWrapper(async (req, res) => {
@@ -180,7 +172,6 @@ export const cycleganPrediction = [
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
       }
-      // المرحلة الأولى: استدعاء نموذج CycleGAN
       const formData = new FormData();
       formData.append("file", req.file.buffer, {
         filename: req.file.originalname,
@@ -192,7 +183,6 @@ export const cycleganPrediction = [
       });
       const modelImageBuffer = Buffer.from(modelResponse.data, "binary");
 
-      // المرحلة الثانية: إرسال الصورة الناتجة إلى upload-image/
       const formData2 = new FormData();
       formData2.append("file", modelImageBuffer, {
         filename: "model_output.png",
