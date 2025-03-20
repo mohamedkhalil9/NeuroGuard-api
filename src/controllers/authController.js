@@ -36,7 +36,7 @@ export const logout = asyncWrapper(async (req, res) => {
   req.logout((err) => {
     if (err) throw new ApiError(err.message, 500);
 
-    res.sendStatus(200);
+    res.sendStatus(200).clearCookie("connect.sid", { httpOnly: true });
   });
 });
 

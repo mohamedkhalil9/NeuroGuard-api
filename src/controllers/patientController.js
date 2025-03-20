@@ -48,11 +48,56 @@ export const getPatients = asyncWrapper(async (req, res) => {
   //   foreignField: '_id',
   //   as: 'patient'
   // }
+  // const patients = await Appointment.aggregate([
+  //     // Stage 1: Lookup to join the Appointment and Patient collections
+  //     {
+  //       $lookup: {
+  //         from: 'patients', // The name of the Patient collection (ensure the name matches in your DB)
+  //         localField: 'patientId', // Field from Appointment collection
+  //         foreignField: '_id', // Field from Patient collection
+  //         as: 'patientDetails' // Alias for the joined data
+  //       }
+  //     },
+  //     // Stage 2: Filter to only include the doctor's appointments
+  //     {
+  //       $match: {
+  //         doctorId: new mongoose.Types.ObjectId(doctorId), // Match appointments with the given doctor
+  //       }
+  //     },
+  //     // Stage 3: Unwind the patientDetails array (flatten it)
+  //     {
+  //       $unwind: '$patientDetails'
+  //     },
+  //     // Stage 4: Filter by age and gender of the patient
+  //     {
+  //       $match: {
+  //         'patientDetails.age': { $gte: age },
+  //         'patientDetails.gender': gender
+  //       }
+  //     },
+  //     // Stage 5: Project to include only the patient details in the result
+  //     {
+  //       $project: {
+  //         _id: 0, // Exclude the _id from the final result (optional)
+  //         patientId: '$patientDetails._id',
+  //         name: '$patientDetails.name',
+  //         age: '$patientDetails.age',
+  //         gender: '$patientDetails.gender',
+  //         // Include any other fields from the Patient document you need
+  //       }
+  //     }
+  //   ]);
+  // model.find({
+  //   '_id': { $in: [
+  //     mongoose.Types.ObjectId('4ed3ede8844f0f351100000c'),
+  //     mongoose.Types.ObjectId('4ed3f117a844e0471100000d'),
+  //     mongoose.Types.ObjectId('4ed3f18132f50c491100000e')
+  //   ]}
+  // })
   const id = req.user._id;
 
-  const appointments = await Appointment.find({ doctor: id })
-    .select("patient")
-    .populate("patient", "firstName lastName"); // Populate patient details
+  const appointments = await Appointment.find({ doctor: id }).select("patient");
+  // .populate("patient", "firstName lastName"); // Populate patient details
 
   if (!appointments[0])
     throw new ApiError("there is no patient for this doctor", 404);

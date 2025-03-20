@@ -41,12 +41,33 @@ export const registerDoctor = asyncWrapper(async (req, res) => {
 
 export const getDoctors = asyncWrapper(async (req, res) => {
   // query validation ??
-  console.log(req.query);
   const query = { ...req.query };
+  const excludedFields = ["sort", "page", "limit", "fields"];
+  excludedFields.forEach((el) => delete query[el]);
+
+  const page = +req.query.page || 1;
+  const limit = +req.query.limit || 10;
+  const skip = (page - 1) * limit;
+  const count = await Doctor.countDocuments();
+  if (skip > count) throw new ApiError("no more items", 400);
+
+  const sort = req.query.sort?.split(",").join(" ");
+  const fields = req.query.fields?.split(",").join(" ");
+
+  const doctors = await Doctor.find(query)
+    .select(fields)
+    .sort(sort)
+    .skip(skip)
+    .limit(limit);
+  res
+    .status(200)
+    .json({ status: "success", results: doctors.length, data: { doctors } });
+});
+
+export const searchDoctors = asyncWrapper(async (req, res) => {
   const excludedFields = ["search", "sort", "page", "limit", "fields"];
   excludedFields.forEach((el) => delete query[el]);
 
-  console.log(req.query);
   const page = +req.query.page || 1;
   const limit = +req.query.limit || 10;
   const skip = (page - 1) * limit;

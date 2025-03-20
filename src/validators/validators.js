@@ -59,3 +59,5 @@ export const appointmentValidator = [
     .withMessage("invalid id"),
   validatorMiddleware,
 ];
+
+export const searchValidator = [validatorMiddleware];

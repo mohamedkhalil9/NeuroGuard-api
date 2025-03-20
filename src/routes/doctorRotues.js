@@ -1,13 +1,18 @@
 import { Router } from "express";
 import {
   getDoctors,
+  searchDoctors,
   getDoctor,
   registerDoctor,
   getDoctorProfile,
   updateDoctorProfile,
   deleteDoctorProfile,
 } from "../controllers/doctorController.js";
-import { registerValidator, idValidator } from "./../validators/validators.js";
+import {
+  registerValidator,
+  idValidator,
+  searchValidator,
+} from "./../validators/validators.js";
 import { authenticate, authorize } from "../controllers/authController.js";
 
 const router = Router();
@@ -21,6 +26,7 @@ router
   .delete(authenticate, authorize("doctor"), deleteDoctorProfile);
 
 router.get("/", getDoctors);
+router.post("/search", searchValidator, searchDoctors);
 router.get("/:id", idValidator, getDoctor);
 
 /**
@@ -101,6 +107,19 @@ router.get("/:id", idValidator, getDoctor);
  *   get:
  *     tags: [Doctors]
  *     summary: List All Doctors
+ *     responses:
+ *       200:
+ *         description: Success
+ *       500:
+ *         description: Server Error
+ */
+
+/**
+ * @swagger
+ * /api/v1/doctors/search:
+ *   post:
+ *     tags: [Doctors]
+ *     summary: Search Doctors
  *     responses:
  *       200:
  *         description: Success
