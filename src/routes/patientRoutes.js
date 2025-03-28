@@ -6,7 +6,7 @@ import {
   deletePatientProfile,
   getPatients,
   getPatient,
-  addFavoriteDoctor,
+  toggleFavoriteDoctor,
   getFavoriteDoctors,
 } from "../controllers/patientController.js";
 import { authenticate, authorize } from "../controllers/authController.js";
@@ -26,7 +26,7 @@ router
 
 router
   .route("/favorites")
-  .post(authorize("patient"), addFavoriteDoctor)
+  .post(authorize("patient"), toggleFavoriteDoctor)
   .get(authorize("patient"), getFavoriteDoctors);
 
 router.get("/", authorize("doctor"), getPatients);

@@ -4,6 +4,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import ApiError from "./../utils/apiError.js";
 import bcrypt from "bcrypt";
 import User from "../models/userModel.js";
+import Patient from "../models/userModel.js";
 
 passport.serializeUser((user, done) => {
   done(null, user._id);
@@ -56,7 +57,7 @@ passport.use(
         const fullName = profile.displayName.split(" ");
         const firstName = fullName[0];
         const lastName = fullName[1];
-        const newUser = await User.create({
+        const newUser = await Patient.create({
           googleId: profile.id,
           firstName,
           lastName,

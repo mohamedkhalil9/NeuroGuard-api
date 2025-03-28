@@ -116,10 +116,14 @@ router.get("/:id", idValidator, getDoctor);
 
 /**
  * @swagger
- * /api/v1/doctors/search:
+ * /api/v1/doctors/search/{searchQuery}:
  *   post:
  *     tags: [Doctors]
  *     summary: Search Doctors
+ *     parameters:
+ *       - name: searchQuery
+ *         in: path
+ *         required: true
  *     responses:
  *       200:
  *         description: Success

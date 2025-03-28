@@ -8,18 +8,26 @@ export const createAppointment = asyncWrapper(async (req, res) => {
   const id = req.user._id;
   const { date, time, doctorId, notes } = req.body;
 
+  const doctor = await Doctor.findById(doctorId);
+  if (!doctor) throw new ApiError("doctor not found", 404);
+
   // NOTE: doc avaliable time validation
+  const available = doctor.availableSlots;
+
   const appointment = await Appointment.create({
     date,
     time,
     patient: id,
     doctor: doctorId,
+    fee: doctor.appointmentFee,
     notes,
   });
   res.status(201).json({ status: "success", data: appointment });
 });
 
-export const payAppointment = asyncWrapper(async (req, res) => {});
+export const payAppointment = asyncWrapper(async (req, res) => {
+  // stripe payment
+});
 
 export const getAppointments = asyncWrapper(async (req, res) => {
   const { user } = req;

@@ -42,6 +42,10 @@ export const registerPatient = asyncWrapper(async (req, res) => {
 
 // NOTE: add patient filters (aggregation)
 export const getPatients = asyncWrapper(async (req, res) => {
+  const { user } = req;
+  const doctorId = user._id;
+  console.log(user, doctorId);
+
   // const pipeline = [{ $match: { doctor: user._id } }, { $lookup: {
   //   from: 'users', // Patient collection name
   //   localField: 'patient',
@@ -155,7 +159,7 @@ export const deletePatientProfile = asyncWrapper(async (req, res) => {
   res.status(200).json({ status: "success", data: null });
 });
 
-export const addFavoriteDoctor = asyncWrapper(async (req, res) => {
+export const toggleFavoriteDoctor = asyncWrapper(async (req, res) => {
   const id = req.user._id;
   const { doctorId } = req.body;
 
@@ -163,7 +167,10 @@ export const addFavoriteDoctor = asyncWrapper(async (req, res) => {
   if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
 
   patient.favoriteDoctors.forEach((e) => {
-    if (e == doctorId) throw new ApiError("doctor already favorite", 400);
+    if (e == doctorId) {
+      // remove if existed
+      throw new ApiError("doctor already favorite", 400);
+    }
   });
   const updatedPatient = await Patient.findByIdAndUpdate(
     id,
