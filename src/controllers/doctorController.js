@@ -57,7 +57,7 @@ export const getDoctors = asyncWrapper(async (req, res) => {
   const fields = req.query.fields?.split(",").join(" ");
 
   const doctors = await Doctor.find(query)
-    .select(fields)
+    .select("-password")
     .sort(sort)
     .skip(skip)
     .limit(limit);
@@ -67,8 +67,9 @@ export const getDoctors = asyncWrapper(async (req, res) => {
 });
 
 export const searchDoctors = asyncWrapper(async (req, res) => {
+  const { searchQuery } = req.params;
   const doctors = await Doctor.find({
-    $text: { $search: req.query.search },
+    $text: { $search: searchQuery },
   });
   res
     .status(200)
