@@ -166,17 +166,15 @@ export const toggleFavoriteDoctor = asyncWrapper(async (req, res) => {
   const patient = await Patient.findById(id);
   if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
 
-  patient.favoriteDoctors.forEach((e) => {
-    if (e == doctorId) {
-      // remove if existed
-      throw new ApiError("doctor already favorite", 400);
-    }
-  });
-  const updatedPatient = await Patient.findByIdAndUpdate(
-    id,
-    { $push: { favoriteDoctors: doctorId } },
-    { new: true },
-  ).select("favoriteDoctors");
+  const existed = await Patient.find({ _id: id, favoriteDoctors: doctorId });
+
+  const query = existed[0]
+    ? { $pull: { favoriteDoctors: doctorId } }
+    : { $push: { favoriteDoctors: doctorId } };
+
+  const updatedPatient = await Patient.findByIdAndUpdate(id, query, {
+    new: true,
+  }).select("favoriteDoctors");
 
   res.status(200).json({ status: "success", data: { updatedPatient } });
 });
