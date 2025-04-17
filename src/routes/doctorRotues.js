@@ -26,8 +26,8 @@ router
   .delete(authenticate, authorize("doctor"), deleteDoctorProfile);
 
 router.get("/", getDoctors);
-router.post("/search/:searchQuery", searchValidator, searchDoctors);
 router.get("/:id", idValidator, getDoctor);
+router.post("/search/:searchQuery", searchValidator, searchDoctors);
 
 /**
  * @swagger

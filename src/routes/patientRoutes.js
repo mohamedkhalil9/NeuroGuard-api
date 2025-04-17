@@ -26,8 +26,8 @@ router
 
 router
   .route("/favorites")
-  .post(authorize("patient"), toggleFavoriteDoctor)
-  .get(authorize("patient"), getFavoriteDoctors);
+  .get(authorize("patient"), getFavoriteDoctors)
+  .patch(authorize("patient"), toggleFavoriteDoctor);
 
 router.get("/", authorize("doctor"), getPatients);
 router.get("/:id", idValidator, authorize("doctor"), getPatient);
