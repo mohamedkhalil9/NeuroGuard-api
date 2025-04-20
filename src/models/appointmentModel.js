@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const appointmentSchema = new mongoose.Schema({
+  // dateTime: { type: Date, required: true }, // Stored in UTC
   date: {
     type: Date,
     required: true,
@@ -20,9 +21,15 @@ const appointmentSchema = new mongoose.Schema({
     ref: "Doctor",
     required: true,
   },
-  fee: {
-    type: Number,
-    required: true,
+  payment: {
+    status: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
+    },
+    amount: Number,
+    stripePaymentId: String,
+    stripeSessionId: String,
   },
   status: {
     type: String,
@@ -31,6 +38,9 @@ const appointmentSchema = new mongoose.Schema({
   },
   createdAt: { type: Date, default: Date.now },
 });
+
+// Prevent double bookings
+appointmentSchema.index({ doctorId: 1, startDateTime: 1 }, { unique: true });
 
 const Appointment = mongoose.model("Appointment", appointmentSchema);
 

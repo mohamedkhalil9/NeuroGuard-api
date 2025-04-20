@@ -3,6 +3,7 @@ import Doctor from "./../models/doctorModel.js";
 import Patient from "./../models/patientModel.js";
 import asyncWrapper from "./../middlewares/asyncWrapper.js";
 import ApiError from "./../utils/apiError.js";
+import stripe from "stripe";
 
 export const createAppointment = asyncWrapper(async (req, res) => {
   const id = req.user._id;
@@ -26,7 +27,46 @@ export const createAppointment = asyncWrapper(async (req, res) => {
 });
 
 export const payAppointment = asyncWrapper(async (req, res) => {
-  // stripe payment
+  try {
+    const appointment = await Appointment.findById(req.params.id).populate(
+      "doctor",
+    );
+
+    if (!appointment)
+      return res.status(404).json({ error: "Appointment not found" });
+    if (appointment.payment.status === "paid")
+      return res.status(400).json({ error: "Already paid" });
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: `Appointment with Dr. ${appointment.doctorId.name}`,
+            },
+            unit_amount: appointment.doctorId.fee,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL}/payment-canceled`,
+      metadata: {
+        appointmentId: appointment._id.toString(),
+      },
+    });
+
+    // Save Stripe session ID to appointment
+    appointment.payment.stripeSessionId = session.id;
+    await appointment.save();
+
+    res.json({ url: session.url });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 export const getAppointments = asyncWrapper(async (req, res) => {
@@ -43,7 +83,11 @@ export const getAppointments = asyncWrapper(async (req, res) => {
   if (!appointments[0])
     throw new ApiError("there is no appointments for this user", 404);
 
-  res.status(200).json({ status: "success", data: appointments });
+  res.status(200).json({
+    status: "success",
+    results: appointments.length,
+    data: { appointments },
+  });
 });
 
 export const getAppointment = asyncWrapper(async (req, res) => {
