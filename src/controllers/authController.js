@@ -64,6 +64,7 @@ export const forgotPassword = asyncWrapper(async (req, res) => {
 export const verifyOtp = asyncWrapper(async (req, res) => {
   const { otp, email } = req.body;
 
+  // NOTE: send a cookie with the email expires after certain time
   const user = await User.findOne({ email });
   const isMatch = await bcrypt.compare(otp, user.otp);
   if (user.otpExpire < Date.now() || !isMatch)

@@ -9,7 +9,7 @@ import strokeRoutes from "./strokeRoutes.js";
 const router = Router();
 
 router.use("/auth", authRoutes);
-router.use("/users", userRoutes);
+// router.use("/users", userRoutes);
 router.use("/patients", patientRoutes);
 router.use("/doctors", doctorRoutes);
 router.use("/appointments", appointmentRoutes);

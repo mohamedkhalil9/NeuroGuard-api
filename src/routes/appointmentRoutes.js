@@ -14,6 +14,7 @@ import { authenticate, authorize } from "../controllers/authController.js";
 const router = Router();
 
 router.use(authenticate);
+
 router
   .route("/")
   .post(appointmentValidator, authorize("patient"), createAppointment)

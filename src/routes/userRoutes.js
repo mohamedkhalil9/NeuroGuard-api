@@ -23,7 +23,7 @@ router
   .delete(deleteUserProfile);
 
 /**
- * @openapi
+ * openapi
  * '/api/v1/users/profile':
  *  get:
  *     tags:
@@ -41,7 +41,7 @@ router
  */
 
 /**
- * @swagger
+ * swagger
  * /api/v1/users/profile:
  *  patch:
  *    summary: Update

@@ -100,8 +100,9 @@ export const getPatients = asyncWrapper(async (req, res) => {
   // })
   const id = req.user._id;
 
-  const appointments = await Appointment.find({ doctor: id }).select("patient");
-  // .populate("patient", "firstName lastName"); // Populate patient details
+  const appointments = await Appointment.find({ doctor: id })
+    .select("patient")
+    .populate("patient"); // Populate patient details
 
   if (!appointments[0])
     throw new ApiError("there is no patient for this doctor", 404);
