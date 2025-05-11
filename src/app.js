@@ -1,23 +1,25 @@
 import express from "express";
-import "dotenv/config";
-import session from "express-session";
-import passport from "passport";
 import mongoose from "mongoose";
+import session from "express-session";
+import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
-import "./services/passport.js";
+import passport from "passport";
 import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import swaggerUi from "swagger-ui-express";
 import spec from "./utils/swagger.js";
+import "dotenv/config";
 import connectDB from "./config/db.js";
+import "./services/passport.js";
 import appRouter from "./routes/indexRouter.js";
 
 connectDB();
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(
   session({
     secret: process.env.SESSION_SECRET,

@@ -57,14 +57,31 @@ passport.use(
         const fullName = profile.displayName.split(" ");
         const firstName = fullName[0];
         const lastName = fullName[1];
-        const newUser = await Patient.create({
-          googleId: profile.id,
+
+        // const newUser = await Patient.create({
+        //   googleId: profile.id,
+        //   firstName,
+        //   lastName,
+        //   email: profile.emails[0].value,
+        //   role: "patient",
+        // });
+
+        const newPatient = await Patient.create({
           firstName,
           lastName,
+          // email,
           email: profile.emails[0].value,
+          // password: hashedPassword,
+          role: "patient",
+          googleId: profile.id,
+          // dateOfBirth,
+          // gender,
+          // phone,
+          // country,
+          // address,
         });
 
-        done(null, newUser);
+        done(null, newPatient);
       } catch (err) {
         done(err, null);
       }

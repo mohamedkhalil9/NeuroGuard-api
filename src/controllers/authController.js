@@ -58,13 +58,19 @@ export const forgotPassword = asyncWrapper(async (req, res) => {
     throw new ApiError(error, 500);
   }
 
-  res.status(200).json({ status: "success", data: user.email });
+  res
+    .status(200)
+    .cookie("reset", email, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 2,
+    })
+    .json({ status: "success", data: user.email });
 });
 
 export const verifyOtp = asyncWrapper(async (req, res) => {
-  const { otp, email } = req.body;
+  const { otp } = req.body;
+  const email = req.cookies.reset ?? req.body.email;
 
-  // NOTE: send a cookie with the email expires after certain time
   const user = await User.findOne({ email });
   const isMatch = await bcrypt.compare(otp, user.otp);
   if (user.otpExpire < Date.now() || !isMatch)
@@ -77,7 +83,8 @@ export const verifyOtp = asyncWrapper(async (req, res) => {
 });
 
 export const resetPassword = asyncWrapper(async (req, res) => {
-  const { email, newPassword, confirmNewPassword } = req.body;
+  const { newPassword, confirmNewPassword } = req.body;
+  const email = req.cookies.reset ?? req.body.email;
 
   if (newPassword !== confirmNewPassword)
     throw new ApiError("password don't match", 409);
@@ -94,5 +101,9 @@ export const resetPassword = asyncWrapper(async (req, res) => {
   user.otpVerifed = undefined;
   await user.save();
 
-  res.status(200).json({ status: "success", data: user.email });
+  res.status(200).json({
+    status: "success",
+    message: "Password Updated Successfully",
+    data: null,
+  });
 });
