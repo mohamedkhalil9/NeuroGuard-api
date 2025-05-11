@@ -41,9 +41,11 @@ export const payAppointment = asyncWrapper(async (req, res) => {
     payment_method_types: ["card"],
     mode: "payment",
     customer_email: req.user.email,
-    success_url: `${process.env.CLIENT_URL}/appointments`,
     // success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.CLIENT_URL}/appointments`,
+    // success_url: `${process.env.CLIENT_URL}/appointments`,
+    success_url: `http://localhost:4000/api/v1/appointments`,
+    // cancel_url: `${process.env.CLIENT_URL}/appointments`,
+    cancel_url: `http://localhost:4000/api/v1/appointments`,
     line_items: [
       {
         price_data: {
@@ -65,13 +67,6 @@ export const payAppointment = asyncWrapper(async (req, res) => {
 
   appointment.payment.stripeSessionId = session.id;
 
-  // const stripe = new Stripe(process.env.STRIPE);
-  // const checkout = await stripe.checkout.sessions.retrieve(appointment.payment.stripeSessionId);
-  if (session.status == "complete") {
-    appointment.payment.amount = appointment.doctor.appointmentFee;
-    appointment.payment.status = "paid";
-    appointment.status = "confirmed";
-  }
   await appointment.save();
 
   res.status(200).json({ status: "success", data: session });
@@ -94,20 +89,16 @@ export const getAppointments = asyncWrapper(async (req, res) => {
 
   const updatedAppointments = await Promise.all(
     appointments.map(async (appointment) => {
-      // Check if stripeSessionId exists
       if (!appointment.payment?.stripeSessionId) {
-        return appointment; // Skip if no session ID
+        return appointment;
       }
 
       try {
-        // Await the Stripe session retrieval
         const stripeSession = await stripe.checkout.sessions.retrieve(
           appointment.payment.stripeSessionId,
         );
 
-        // Check if session is completed
         if (stripeSession.payment_status === "paid") {
-          // Update only if status changed
           if (appointment.payment.status !== "paid") {
             appointment.payment.amount = stripeSession.amount_total / 100;
             appointment.payment.status = "paid";
@@ -125,25 +116,6 @@ export const getAppointments = asyncWrapper(async (req, res) => {
       }
     }),
   );
-  // const confirmed = await appointments.forEach(async (appointment) => {
-  //   if (!appointment.stripeSessionId) {
-  //     return; // Skip this iteration
-  //   }
-  //
-  //   try {
-  //     const stripeSession = await stripe.checkout.sessions.retrieve(
-  //       appointment.payment.stripeSessionId,
-  //     );
-  //     if (stripeSession.status == "complete") {
-  //       appointment.payment.amount = stripeSession.amount_total / 100;
-  //       appointment.payment.status = "paid";
-  //       appointment.status = "confirmed";
-  //       await appointment.save();
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // });
 
   res.status(200).json({
     status: "success",
@@ -160,36 +132,6 @@ export const getAppointment = asyncWrapper(async (req, res) => {
     .populate("patient");
 
   if (!appointment) throw new ApiError("appointment not found", 404);
-  //
-  // const updatedAppointment = await Promise.all(async (appointment) => {
-  //   // appointments.map(async (appointment) => {
-  //   // Check if stripeSessionId exists
-  //   if (!appointment.payment?.stripeSessionId) {
-  //     return appointment; // Skip if no session ID
-  //   }
-  //
-  //   try {
-  //     // Await the Stripe session retrieval
-  //     const stripeSession = await stripe.checkout.sessions.retrieve(
-  //       appointment.payment.stripeSessionId,
-  //     );
-  //
-  //     // Check if session is completed
-  //     if (stripeSession.payment_status === "paid") {
-  //       // Update only if status changed
-  //       if (appointment.payment.status !== "paid") {
-  //         appointment.payment.amount = stripeSession.amount_total / 100;
-  //         appointment.payment.status = "paid";
-  //         appointment.status = "confirmed";
-  //         await appointment.save();
-  //       }
-  //     }
-  //     return appointment;
-  //   } catch (error) {
-  //     console.error(`Error processing appointment ${appointment._id}:`, error);
-  //     return appointment; // Return original if error
-  //   }
-  // });
-  //
+
   res.status(200).json({ status: "success", data: appointment });
 });
