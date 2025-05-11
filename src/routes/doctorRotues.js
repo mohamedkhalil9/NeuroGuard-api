@@ -18,6 +18,7 @@ import { authenticate, authorize } from "../controllers/authController.js";
 const router = Router();
 
 router.post("/register", registerValidator, registerDoctor);
+// NOTE: image upload multer and cloudinary
 
 router
   .route("/profile")

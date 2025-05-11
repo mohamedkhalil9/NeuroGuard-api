@@ -50,8 +50,10 @@ export const getDoctors = asyncWrapper(async (req, res) => {
   const page = +req.query.page || 1;
   const limit = +req.query.limit || 10;
   const skip = (page - 1) * limit;
-  const count = await Doctor.countDocuments();
-  if (skip > count) throw new ApiError("no more items", 400);
+
+  // NOTE: we should count the results not the document itself
+  // const count = await Doctor.countDocuments();
+  // if (skip > count) throw new ApiError("no more items", 400);
 
   const sort = req.query.sort?.split(",").join(" ");
   const fields = req.query.fields
@@ -78,17 +80,18 @@ export const searchDoctors = asyncWrapper(async (req, res) => {
   const page = +req.query.page || 1;
   const limit = +req.query.limit || 10;
   const skip = (page - 1) * limit;
-  const count = await Doctor.countDocuments();
-  if (skip > count) throw new ApiError("no more items", 400);
+  // const count = await Doctor.countDocuments();
+  // if (skip > count) throw new ApiError("no more items", 400);
 
   const sort = req.query.sort?.split(",").join(" ");
   const fields = req.query.fields
     ? req.query.fields.split(",").join(" ")
     : "-password";
 
-  const doctors = await Doctor.find({
-    $text: { $search: searchQuery },
-  })
+  const findQuery = {
+    $and: [query, { $text: { $search: searchQuery } }],
+  };
+  const doctors = await Doctor.find(findQuery)
     .select(fields)
     .sort(sort)
     .skip(skip)
