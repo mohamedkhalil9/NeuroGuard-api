@@ -17,6 +17,7 @@ router.use(authenticate);
 
 router
   .route("/")
+  // NOTE:working hours and validation
   .post(appointmentValidator, authorize("patient"), createAppointment)
   .get(getAppointments);
 

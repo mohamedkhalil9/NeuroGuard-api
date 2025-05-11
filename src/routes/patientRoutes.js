@@ -15,6 +15,7 @@ import { registerValidator, idValidator } from "../validators/validators.js";
 const router = Router();
 
 router.post("/register", registerValidator, registerPatient);
+// NOTE: image upload multer and cloudinary
 
 router.use(authenticate);
 
