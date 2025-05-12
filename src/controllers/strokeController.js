@@ -3,7 +3,7 @@ import ApiError from "./../utils/apiError.js";
 import axios from "axios";
 import FormData from "form-data";
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = process.env.BASE_URL;
 
 export const prediction = asyncWrapper(async (req, res) => {
   try {
@@ -29,40 +29,6 @@ export const uploadImage = asyncWrapper(async (req, res) => {
     });
 
     const response = await axios.post(`${BASE_URL}/upload-image/`, formData, {
-      headers: {
-        ...formData.getHeaders(),
-      },
-    });
-
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({
-      error: error.response?.data || error.message || "Internal Server Error",
-    });
-  }
-});
-
-export const chatbot = asyncWrapper(async (req, res) => {
-  try {
-    const response = await axios.post(`${BASE_URL}/chat/`, req.body);
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({
-      error: error.response?.data || error.message || "Internal Server Error",
-    });
-  }
-});
-
-export const uploadPdf = asyncWrapper(async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
-
-    const formData = new FormData();
-    formData.append("file", req.file.buffer, req.file.originalname);
-
-    const response = await axios.post(`${BASE_URL}/upload-pdf/`, formData, {
       headers: {
         ...formData.getHeaders(),
       },
@@ -220,3 +186,36 @@ export const cycleganPrediction = asyncWrapper(async (req, res) => {
     });
   }
 });
+
+// export const chatbot = asyncWrapper(async (req, res) => {
+//   try {
+//     const response = await axios.post(`${BASE_URL}/chat/stream`, req.body);
+//     res.json(response.data);
+//   } catch (error) {
+//     res.status(500).json({ error: error.response?.data || error.message || "Internal Server Error" });
+//   }
+// });
+
+// export const uploadPdf = [
+//   upload.single("file"),
+//   asyncWrapper(async (req, res) => {
+//     try {
+//       if (!req.file) {
+//         return res.status(400).json({ error: "No file uploaded" });
+//       }
+
+//       const formData = new FormData();
+//       formData.append("file", req.file.buffer, req.file.originalname);
+
+//       const response = await axios.post(`${BASE_URL}/upload-pdf/`, formData, {
+//         headers: {
+//           ...formData.getHeaders(),
+//         },
+//       });
+
+//       res.json(response.data);
+//     } catch (error) {
+//       res.status(500).json({ error: error.response?.data || error.message || "Internal Server Error" });
+//     }
+//   }),
+// ];
