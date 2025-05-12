@@ -12,10 +12,12 @@ import swaggerUi from "swagger-ui-express";
 import spec from "./utils/swagger.js";
 import "dotenv/config";
 import connectDB from "./config/db.js";
+import connectCloudinary from "./config/cloudinary.js";
 import "./services/passport.js";
 import appRouter from "./routes/indexRouter.js";
 
 connectDB();
+connectCloudinary();
 
 const app = express();
 app.use(express.json());
