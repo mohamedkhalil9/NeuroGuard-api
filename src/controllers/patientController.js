@@ -59,7 +59,7 @@ export const getPatients = asyncWrapper(async (req, res) => {
 
   const appointments = await Appointment.find({ doctor: id }).select("patient");
 
-  if (!appointments[0])
+  if (appointments.lenght === 0)
     throw new ApiError("there is no patient for this doctor", 404);
 
   const patientIds = appointments.map((appointment) => appointment.patient);
