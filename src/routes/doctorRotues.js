@@ -4,6 +4,7 @@ import {
   searchDoctors,
   getDoctor,
   registerDoctor,
+  uploadProfileImg,
   getDoctorProfile,
   updateDoctorProfile,
   deleteDoctorProfile,
@@ -14,17 +15,20 @@ import {
   searchValidator,
 } from "./../validators/validators.js";
 import { authenticate, authorize } from "../controllers/authController.js";
+import upload from "../middlewares/multer.js";
 
 const router = Router();
 
 router.post("/register", registerValidator, registerDoctor);
-// NOTE: image upload multer and cloudinary
 
 router
   .route("/profile")
   .get(authenticate, authorize("doctor"), getDoctorProfile)
   .patch(authenticate, authorize("doctor"), updateDoctorProfile)
   .delete(authenticate, authorize("doctor"), deleteDoctorProfile);
+
+// NOTE: image upload multer and cloudinary
+router.route("/profile/upload").post(upload.single("image"), uploadProfileImg);
 
 router.get("/", getDoctors);
 router.get("/:id", idValidator, getDoctor);

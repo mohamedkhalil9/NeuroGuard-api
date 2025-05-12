@@ -1,24 +1,28 @@
 import { Router } from "express";
 import {
-  prediction,uploadImage,srganPrediction , denoisingPrediction ,cycleganPrediction
+  prediction,
+  uploadImage,
+  srganPrediction,
+  denoisingPrediction,
+  cycleganPrediction,
 } from "./../controllers/strokeController.js";
 import { authenticate } from "../controllers/authController.js";
+import upload from "../middlewares/multer.js";
 
 const router = Router();
 
 router.use(authenticate);
 
-
-// use FastAPI server /chat/stream 
+// use FastAPI server /chat/stream
 // use FastAPI server /chat_history
 // use FastAPI server /pdf/upload
 router.post("/predict", prediction);
-router.post("/upload-image", uploadImage);
+router.post("/upload-image", upload.single("file"), uploadImage);
 // router.post("/chat", chatbot);
 // router.post("/upload-pdf", uploadPdf);
-router.post('/predict/srgan', srganPrediction)
-router.post('/predict/denoising', denoisingPrediction)
-router.post('/predict/cyclegan', cycleganPrediction)
+router.post("/predict/srgan", upload.single("file"), srganPrediction);
+router.post("/predict/denoising", upload.single("file"), denoisingPrediction);
+router.post("/predict/cyclegan", upload.single("file"), cycleganPrediction);
 
 /**
  * @swagger

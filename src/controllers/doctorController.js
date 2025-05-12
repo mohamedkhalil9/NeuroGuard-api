@@ -4,6 +4,7 @@ import Appointment from "./../models/appointmentModel.js";
 import asyncWrapper from "./../middlewares/asyncWrapper.js";
 import ApiError from "./../utils/apiError.js";
 import bcrypt from "bcrypt";
+import { v2 as cloudinary } from "cloudinary";
 
 export const registerDoctor = asyncWrapper(async (req, res) => {
   const {
@@ -39,6 +40,14 @@ export const registerDoctor = asyncWrapper(async (req, res) => {
   });
 
   res.status(201).json({ status: "success", data: newDoctor });
+});
+
+export const uploadProfileImg = asyncWrapper(async (req, res) => {
+  const img = req.file;
+  console.log(img);
+  const upload = await cloudinary.uploader.upload(img.path);
+  const url = upload.secure_url;
+  console.log(url);
 });
 
 export const getDoctors = asyncWrapper(async (req, res) => {

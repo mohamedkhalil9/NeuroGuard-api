@@ -15,7 +15,6 @@ import { registerValidator, idValidator } from "../validators/validators.js";
 const router = Router();
 
 router.post("/register", registerValidator, registerPatient);
-// NOTE: image upload multer and cloudinary
 
 router.use(authenticate);
 
@@ -24,6 +23,9 @@ router
   .get(authorize("patient"), getPatientProfile)
   .patch(authorize("patient"), updatePatientProfile)
   .delete(authorize("patient"), deletePatientProfile);
+
+// NOTE: image upload multer and cloudinary
+// router.route("/profile/upload").post(upload.single("image"), uploadProfileImg);
 
 router
   .route("/favorites")
