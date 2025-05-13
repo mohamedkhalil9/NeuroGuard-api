@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 import User from "./userModel.js";
 
 const patientSchema = new mongoose.Schema({
-  // image: {
-  //   type: String,
-  //   // default
-  // },
+  profileImg: {
+    type: String,
+    default: "placeholder",
+  },
   medicalHistory: {
     mriUrl: String,
     strokeStatus: String,

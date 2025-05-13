@@ -1,29 +1,36 @@
 import Appointment from "./../models/appointmentModel.js";
 import Doctor from "./../models/doctorModel.js";
-import Patient from "./../models/patientModel.js";
 import asyncWrapper from "./../middlewares/asyncWrapper.js";
 import ApiError from "./../utils/apiError.js";
 import Stripe from "stripe";
+import { getAvailableSchedule } from "../utils/scheduleGenerator.js";
 
 const stripe = new Stripe(process.env.STRIPE);
 
 export const createAppointment = asyncWrapper(async (req, res) => {
   const id = req.user._id;
-  const { date, time, doctorId, notes } = req.body;
+  // { date, time, } = req.body;
+  const { doctorId, startTime, notes } = req.body;
 
   const doctor = await Doctor.findById(doctorId);
   if (!doctor) throw new ApiError("doctor not found", 404);
 
-  // const available = doctor.availableSlots;
+  const requestedDate = new Date(startTime);
+  const availableSchedule = await getAvailableSchedule(doctorId, requestedDate);
+
+  const isValidTime = availableSchedule.some(
+    (slot) => slot.start.getTime() === requestedDate.getTime(),
+  );
+  if (!isValidTime) throw new ApiError("Time is not availabe", 400);
 
   const appointment = await Appointment.create({
-    date,
-    time,
-    patient: id,
     doctor: doctorId,
-    fee: doctor.appointmentFee,
+    patient: id,
+    startTime: requestedDate,
+    endTime: new Date(requestedDate.getTime() + 60 * 60 * 1000),
     notes,
   });
+
   res.status(201).json({ status: "success", data: appointment });
 });
 

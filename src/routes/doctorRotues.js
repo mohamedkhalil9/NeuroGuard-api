@@ -32,6 +32,8 @@ router.route("/profile/upload").post(upload.single("image"), uploadProfileImg);
 
 router.get("/", getDoctors);
 router.get("/:id", idValidator, getDoctor);
+// NOTE: separate endpoint for schedule only
+router.get("/:id/schedule", idValidator, getDoctor);
 router.post("/search/:searchQuery", searchValidator, searchDoctors);
 
 /**

@@ -1,10 +1,10 @@
 import User from "../models/userModel.js";
 import Doctor from "./../models/doctorModel.js";
-import Appointment from "./../models/appointmentModel.js";
 import asyncWrapper from "./../middlewares/asyncWrapper.js";
 import ApiError from "./../utils/apiError.js";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
+import { getAvailableSchedule } from "../utils/scheduleGenerator.js";
 
 export const registerDoctor = asyncWrapper(async (req, res) => {
   const {
@@ -12,14 +12,16 @@ export const registerDoctor = asyncWrapper(async (req, res) => {
     lastName,
     email,
     password,
-    role,
     dateOfBirth,
     gender,
+    appointmentFee,
     phone,
+    specialization,
     country,
     address,
+    workingDays,
+    defaultWorkingDays,
   } = req.body;
-
   const user = await User.findOne({ email: email });
   if (user) throw new ApiError("email aleardy existed", 409);
 
@@ -35,19 +37,27 @@ export const registerDoctor = asyncWrapper(async (req, res) => {
     phone,
     country,
     address,
-    // add default availabe time
-    availableSlots: [],
+    appointmentFee,
+    workingDays,
+    defaultWorkingDays,
+    specialization,
   });
 
   res.status(201).json({ status: "success", data: newDoctor });
 });
 
 export const uploadProfileImg = asyncWrapper(async (req, res) => {
+  const id = req.user._id;
   const img = req.file;
-  console.log(img);
+
+  const doctor = await Doctor.findById(id);
   const upload = await cloudinary.uploader.upload(img.path);
   const url = upload.secure_url;
-  console.log(url);
+
+  doctor.profileImg = url;
+  await doctor.save();
+
+  res.status(200).json({ status: "success", data: { doctor } });
 });
 
 export const getDoctors = asyncWrapper(async (req, res) => {
@@ -113,9 +123,26 @@ export const searchDoctors = asyncWrapper(async (req, res) => {
 
 export const getDoctor = asyncWrapper(async (req, res) => {
   const { id } = req.params;
-  const doctor = await Doctor.findById(id);
+  const doctor = await Doctor.findById(id).select("-password -workingHours");
   if (!doctor) throw new ApiError("doctor not found", 404);
-  res.status(200).json({ status: "success", data: { doctor } });
+
+  // NOTE: get avalitity for a week from now not just today or a specific day
+  const availability = await getAvailableSchedule(
+    doctor._id,
+    req.query.date || new Date(),
+  );
+  // const availableSlots = availability.map((slot) => ({
+  //   start: slot.start.toISOString(),
+  //   end: slot.end.toISOString(),
+  // }));
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      doctor,
+      availability,
+    },
+  });
 });
 
 export const getDoctorProfile = asyncWrapper(async (req, res) => {

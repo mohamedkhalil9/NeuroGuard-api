@@ -2,46 +2,43 @@ import mongoose from "mongoose";
 import User from "./userModel.js";
 
 const doctorSchema = new mongoose.Schema({
-  // image: {
-  //   type: String,
-  // },
-  // booked:
+  profileImg: {
+    type: String,
+  },
+  // booked: findAppointments and get it's dateTime
   appointmentFee: Number, //  this is salary
   //slug
+  workingDays: [
+    {
+      day: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 6, // 0 = Sunday, 6 = Saturday
+      },
+      start: {
+        type: String,
+        default: "16:00",
+        match: /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/,
+      },
+      end: {
+        type: String,
+        default: "22:00",
+        match: /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/,
+      },
+      _id: false,
+    },
+  ],
+  // Default working hours if none provided so what does default start and end used for?
+  // If working everyday or when the day do not provided as working day
+  defaultWorkingDays: {
+    type: Boolean,
+    // default: true,
+  },
   specialization: {
     type: String,
     //required: true
   },
-  // workingHours: {
-  //   type: [
-  //     {
-  //       day: {
-  //         type: String,
-  //         enum: [
-  //           "Sunday",
-  //           "Monday",
-  //           "Tuesday",
-  //           "Wednesday",
-  //           "Thursday",
-  //           "Friday",
-  //           "Saturday",
-  //         ],
-  //       },
-  //       startTime: { type: String, default: "09:00" },
-  //       endTime: { type: String, default: "17:00" },
-  //     },
-  //   ],
-  //   default: function() {
-  //     // Default working hours: Sun-Thu, 9 AM to 5 PM
-  //     return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"].map(
-  //       (day) => ({
-  //         day,
-  //         startTime: "09:00",
-  //         endTime: "17:00",
-  //       }),
-  //     );
-  //   },
-  // },
 });
 
 doctorSchema.index({
