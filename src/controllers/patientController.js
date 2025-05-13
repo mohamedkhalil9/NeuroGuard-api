@@ -11,7 +11,6 @@ export const registerPatient = asyncWrapper(async (req, res) => {
     lastName,
     email,
     password,
-    role,
     dateOfBirth,
     gender,
     phone,
@@ -38,6 +37,21 @@ export const registerPatient = asyncWrapper(async (req, res) => {
   });
 
   res.status(201).json({ status: "success", data: newPatient });
+});
+
+export const uploadProfileImg = asyncWrapper(async (req, res) => {
+  const id = req.user._id;
+  const img = req.file;
+
+  // const patient = await Patient.findById(id);
+  const upload = await cloudinary.uploader.upload(img.path);
+  const url = upload.secure_url;
+
+  // patient.profileImg = url;
+  // await patient.save();
+  const patient = await patient.findByIdAndUpdate(id, { profileImg: url });
+
+  res.status(200).json({ status: "success", data: patient });
 });
 
 export const getPatients = asyncWrapper(async (req, res) => {
