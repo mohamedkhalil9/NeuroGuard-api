@@ -4,7 +4,10 @@ import asyncWrapper from "./../middlewares/asyncWrapper.js";
 import ApiError from "./../utils/apiError.js";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
-import { getAvailableSchedule } from "../utils/scheduleGenerator.js";
+import {
+  getAvailableSchedule,
+  toEgyptTime,
+} from "../utils/scheduleGenerator.js";
 
 export const registerDoctor = asyncWrapper(async (req, res) => {
   const {
@@ -127,20 +130,21 @@ export const getDoctor = asyncWrapper(async (req, res) => {
   if (!doctor) throw new ApiError("doctor not found", 404);
 
   // NOTE: get avalitity for a week from now not just today or a specific day
-  const availability = await getAvailableSchedule(
+  const availableSchedule = await getAvailableSchedule(
     doctor._id,
     req.query.date || new Date(),
   );
-  // const availableSlots = availability.map((slot) => ({
-  //   start: slot.start.toISOString(),
-  //   end: slot.end.toISOString(),
-  // }));
+
+  const egyptTime = availableSchedule.map((hour) => ({
+    start: toEgyptTime(hour.start),
+    end: toEgyptTime(hour.end),
+  }));
 
   res.status(200).json({
     status: "success",
     data: {
       doctor,
-      availability,
+      availabeHours: egyptTime,
     },
   });
 });

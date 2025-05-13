@@ -1,5 +1,6 @@
 import Doctor from "../models/doctorModel.js";
 import Appointment from "../models/appointmentModel.js";
+import { DateTime } from "luxon";
 
 export const generateSchedule = (doctor, date) => {
   const hours = [];
@@ -14,9 +15,9 @@ export const generateSchedule = (doctor, date) => {
     doctor.workingDays.find((wh) => wh.day === dayOfWeek) ||
     (doctor.defaultWorkingDays
       ? {
-          start: "16:00",
-          end: "22:00",
-        }
+        start: "16:00",
+        end: "22:00",
+      }
       : null);
 
   if (!workingHours) return []; // Doctor doesn't work this day
@@ -47,6 +48,12 @@ export const generateSchedule = (doctor, date) => {
   return hours;
 };
 
+export const toEgyptTime = (utcDate) => {
+  return DateTime.fromJSDate(utcDate)
+    .setZone("Africa/Cairo")
+    .toFormat("yyyy-MM-dd HH:mm");
+};
+
 export const getAvailableSchedule = async (doctorId, date) => {
   const doctor = await Doctor.findById(doctorId);
   const requestedDate = new Date(date);
@@ -61,7 +68,7 @@ export const getAvailableSchedule = async (doctorId, date) => {
       $gte: new Date(requestedDate.setHours(0, 0, 0, 0)),
       $lt: new Date(requestedDate.setHours(23, 59, 59, 999)),
     },
-    status: "confirmed",
+    status: "booked",
   });
 
   // Filter out booked hours
@@ -73,5 +80,5 @@ export const getAvailableSchedule = async (doctorId, date) => {
 
   // Filter out past hours
   const now = new Date();
-  return availableSchedule.filter((slot) => slot.start > now);
+  return availableSchedule.filter((hour) => hour.start > now);
 };

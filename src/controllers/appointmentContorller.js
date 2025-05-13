@@ -4,6 +4,7 @@ import asyncWrapper from "./../middlewares/asyncWrapper.js";
 import ApiError from "./../utils/apiError.js";
 import Stripe from "stripe";
 import { getAvailableSchedule } from "../utils/scheduleGenerator.js";
+import { DateTime } from "luxon";
 
 const stripe = new Stripe(process.env.STRIPE);
 
@@ -15,11 +16,14 @@ export const createAppointment = asyncWrapper(async (req, res) => {
   const doctor = await Doctor.findById(doctorId);
   if (!doctor) throw new ApiError("doctor not found", 404);
 
-  const requestedDate = new Date(startTime);
+  const egyptTime = DateTime.fromISO(startTime, { zone: "Africa/Cairo" });
+  const utcStartTime = egyptTime.toUTC().toJSDate();
+
+  const requestedDate = new Date(utcStartTime);
   const availableSchedule = await getAvailableSchedule(doctorId, requestedDate);
 
   const isValidTime = availableSchedule.some(
-    (slot) => slot.start.getTime() === requestedDate.getTime(),
+    (hour) => hour.start.getTime() === requestedDate.getTime(),
   );
   if (!isValidTime) throw new ApiError("Time is not availabe", 400);
 
@@ -31,7 +35,16 @@ export const createAppointment = asyncWrapper(async (req, res) => {
     notes,
   });
 
-  res.status(201).json({ status: "success", data: appointment });
+  res.status(201).json({
+    status: "success",
+    data: {
+      localTime: {
+        start: egyptTime.toFormat("yyyy-MM-dd HH:mm"),
+        end: egyptTime.plus({ hours: 1 }).toFormat("yyyy-MM-dd HH:mm"),
+      },
+      ...appointment._doc,
+    },
+  });
 });
 
 export const payAppointment = asyncWrapper(async (req, res) => {
@@ -87,7 +100,7 @@ export const getAppointments = asyncWrapper(async (req, res) => {
   else if (user.role === "doctor") query.doctor = user._id;
 
   const appointments = await Appointment.find(query)
-    .populate("doctor")
+    .populate("doctor") // NOTE:select important fields only
     .populate("patient");
 
   // NOTE:
@@ -109,7 +122,7 @@ export const getAppointments = asyncWrapper(async (req, res) => {
           if (appointment.payment.status !== "paid") {
             appointment.payment.amount = stripeSession.amount_total / 100;
             appointment.payment.status = "paid";
-            appointment.status = "confirmed";
+            // appointment.status = "confirmed";
             await appointment.save();
           }
         }
@@ -123,6 +136,11 @@ export const getAppointments = asyncWrapper(async (req, res) => {
       }
     }),
   );
+
+  // const localTime = DateTime.fromJSDate(appointment.startTime)
+  //   .setZone("Africa/Cairo")
+  //   .toFormat("HH:mm");
+  // Use mongoose middlewares
 
   res.status(200).json({
     status: "success",
@@ -140,5 +158,8 @@ export const getAppointment = asyncWrapper(async (req, res) => {
 
   if (!appointment) throw new ApiError("appointment not found", 404);
 
-  res.status(200).json({ status: "success", data: appointment });
+  const localTime = DateTime.fromJSDate(appointment.startTime)
+    .setZone("Africa/Cairo")
+    .toFormat("HH:mm");
+  res.status(200).json({ status: "success", data: { localTime, appointment } });
 });
