@@ -62,3 +62,8 @@ export const appointmentValidator = [
 ];
 
 export const searchValidator = [validatorMiddleware];
+
+export const scheduleValidator = [
+  param("date").notEmpty().withMessage("enter a date"),
+  validatorMiddleware,
+];

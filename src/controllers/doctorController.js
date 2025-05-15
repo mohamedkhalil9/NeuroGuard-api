@@ -34,7 +34,7 @@ export const registerDoctor = asyncWrapper(async (req, res) => {
     lastName,
     email,
     password: hashedPassword,
-    role: "doctor",
+    role: "DOCTOR",
     dateOfBirth,
     gender,
     phone,
@@ -129,11 +129,7 @@ export const getDoctor = asyncWrapper(async (req, res) => {
   const doctor = await Doctor.findById(id).select("-password -workingHours");
   if (!doctor) throw new ApiError("doctor not found", 404);
 
-  // NOTE: get avalitity for a week from now not just today or a specific day
-  const availableSchedule = await getAvailableSchedule(
-    doctor._id,
-    req.query.date || new Date(),
-  );
+  const availableSchedule = await getAvailableSchedule(doctor._id, new Date());
 
   const egyptTime = availableSchedule.map((hour) => ({
     start: toEgyptTime(hour.start),
@@ -145,6 +141,29 @@ export const getDoctor = asyncWrapper(async (req, res) => {
     data: {
       doctor,
       availabeHours: egyptTime,
+    },
+  });
+});
+
+export const getDoctorSchedule = asyncWrapper(async (req, res) => {
+  const { id } = req.params;
+  const { date } = req.params;
+
+  const doctor = await Doctor.findById(id).select("-password -workingHours");
+  if (!doctor) throw new ApiError("doctor not found", 404);
+
+  const availableSchedule = await getAvailableSchedule(doctor._id, date);
+
+  const egyptTime = availableSchedule.map((hour) => ({
+    start: toEgyptTime(hour.start),
+    end: toEgyptTime(hour.end),
+  }));
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      availabeHours: egyptTime,
+      doctor,
     },
   });
 });

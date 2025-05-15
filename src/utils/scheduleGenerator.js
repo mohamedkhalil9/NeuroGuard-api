@@ -8,7 +8,6 @@ export const generateSchedule = (doctor, date) => {
 
   // Get working hours for the requested day
   const dayOfWeek = requestedDate.getDay();
-  // NOTE: work on a week ? or just a day
 
   const workingHours =
     // when there is day provided it will be used otherwise it will generate a default working day 9 to 5

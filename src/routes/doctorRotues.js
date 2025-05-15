@@ -3,6 +3,7 @@ import {
   getDoctors,
   searchDoctors,
   getDoctor,
+  getDoctorSchedule,
   registerDoctor,
   uploadProfileImg,
   getDoctorProfile,
@@ -13,6 +14,7 @@ import {
   registerValidator,
   idValidator,
   searchValidator,
+  scheduleValidator,
 } from "./../validators/validators.js";
 import { authenticate, authorize } from "../controllers/authController.js";
 import upload from "../middlewares/multer.js";
@@ -23,17 +25,27 @@ router.post("/register", registerValidator, registerDoctor);
 
 router
   .route("/profile")
-  .get(authenticate, authorize("doctor"), getDoctorProfile)
-  .patch(authenticate, authorize("doctor"), updateDoctorProfile)
-  .delete(authenticate, authorize("doctor"), deleteDoctorProfile);
+  .get(authenticate, authorize("DOCTOR"), getDoctorProfile)
+  .patch(authenticate, authorize("DOCTOR"), updateDoctorProfile)
+  .delete(authenticate, authorize("DOCTOR"), deleteDoctorProfile);
 
-// NOTE: image upload multer and cloudinary
-router.route("/profile/upload").post(upload.single("image"), uploadProfileImg);
+router
+  .route("/profile/upload")
+  .post(
+    authenticate,
+    authorize("DOCTOR"),
+    upload.single("image"),
+    uploadProfileImg,
+  );
 
 router.get("/", getDoctors);
 router.get("/:id", idValidator, getDoctor);
-// NOTE: separate endpoint for schedule only
-router.get("/:id/schedule", idValidator, getDoctor);
+router.get(
+  "/:id/schedule/:date",
+  idValidator,
+  scheduleValidator,
+  getDoctorSchedule,
+);
 router.post("/search/:searchQuery", searchValidator, searchDoctors);
 
 /**
