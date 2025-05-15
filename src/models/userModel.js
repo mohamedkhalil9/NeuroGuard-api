@@ -14,12 +14,17 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  // email verified
   password: {
     type: String,
   },
+  profileImg: {
+    type: String,
+    default: "placeholder",
+  },
   role: {
     type: String,
-    enum: ["patient", "doctor", "admin"],
+    enum: ["PATIENT", "DOCTOR", "ADMIN"],
     required: true,
   },
   gender: {

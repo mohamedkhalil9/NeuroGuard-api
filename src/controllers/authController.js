@@ -13,7 +13,7 @@ export const login = asyncWrapper(async (req, res) => {
     const user = { ...req.user._doc };
     delete user["password"];
 
-    res.status(200).json({ user });
+    res.status(200).json({ status: "success", data: user });
   });
 });
 

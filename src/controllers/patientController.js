@@ -28,7 +28,7 @@ export const registerPatient = asyncWrapper(async (req, res) => {
     lastName,
     email,
     password: hashedPassword,
-    role: "patient",
+    role: "PATIENT",
     dateOfBirth,
     gender,
     phone,
@@ -73,7 +73,7 @@ export const getPatients = asyncWrapper(async (req, res) => {
 
   const appointments = await Appointment.find({ doctor: id }).select("patient");
 
-  if (appointments.lenght === 0)
+  if (appointments.length === 0)
     throw new ApiError("there is no patient for this doctor", 404);
 
   const patientIds = appointments.map((appointment) => appointment.patient);
@@ -156,7 +156,7 @@ export const getFavoriteDoctors = asyncWrapper(async (req, res) => {
   const patient = await Patient.findById(id).select("favoriteDoctors");
   if (!patient) throw new ApiError(`there is no patient with id ${id}`, 404);
 
-  if (!patient.favoriteDoctors[0])
+  if (patient.favoriteDoctors.length === 0)
     throw new ApiError("there is no favorite Doctors for this patient");
 
   res.status(200).json({ status: "success", data: { patient } });

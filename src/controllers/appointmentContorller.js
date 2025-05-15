@@ -52,10 +52,9 @@ export const payAppointment = asyncWrapper(async (req, res) => {
     "doctor",
   );
 
-  if (!appointment)
-    return res.status(404).json({ error: "Appointment not found" });
+  if (!appointment) throw new ApiError("appointment not found", 404);
   if (appointment.payment.status === "paid")
-    return res.status(400).json({ error: "Already paid" });
+    throw new ApiError("Already paid", 400);
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
@@ -96,8 +95,8 @@ export const getAppointments = asyncWrapper(async (req, res) => {
   const { user } = req;
 
   const query = {};
-  if (user.role === "patient") query.patient = user._id;
-  else if (user.role === "doctor") query.doctor = user._id;
+  if (user.role === "PATIENT") query.patient = user._id;
+  else if (user.role === "DOCTOR") query.doctor = user._id;
 
   const appointments = await Appointment.find(query)
     .populate("doctor") // NOTE:select important fields only
@@ -122,7 +121,7 @@ export const getAppointments = asyncWrapper(async (req, res) => {
           if (appointment.payment.status !== "paid") {
             appointment.payment.amount = stripeSession.amount_total / 100;
             appointment.payment.status = "paid";
-            // appointment.status = "confirmed";
+            // appointment.status = "booked";
             await appointment.save();
           }
         }

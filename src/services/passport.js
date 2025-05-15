@@ -58,21 +58,11 @@ passport.use(
         const firstName = fullName[0];
         const lastName = fullName[1];
 
-        // const newUser = await Patient.create({
-        //   googleId: profile.id,
-        //   firstName,
-        //   lastName,
-        //   email: profile.emails[0].value,
-        //   role: "patient",
-        // });
-
         const newPatient = await Patient.create({
           firstName,
           lastName,
-          // email,
           email: profile.emails[0].value,
-          // password: hashedPassword,
-          role: "patient",
+          role: "PATIENT",
           googleId: profile.id,
           // dateOfBirth,
           // gender,

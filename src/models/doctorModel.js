@@ -2,12 +2,6 @@ import mongoose from "mongoose";
 import User from "./userModel.js";
 
 const doctorSchema = new mongoose.Schema({
-  profileImg: {
-    type: String,
-  },
-  // booked: findAppointments and get it's dateTime
-  appointmentFee: Number, //  this is salary
-  //slug
   workingDays: [
     {
       day: {
@@ -35,10 +29,12 @@ const doctorSchema = new mongoose.Schema({
     type: Boolean,
     // default: true,
   },
+  appointmentFee: Number, //  this is salary
   specialization: {
     type: String,
     //required: true
   },
+  //slug
 });
 
 doctorSchema.index({

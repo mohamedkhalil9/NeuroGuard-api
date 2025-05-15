@@ -4,6 +4,7 @@ import {
   getPatientProfile,
   updatePatientProfile,
   deletePatientProfile,
+  uploadProfileImg,
   getPatients,
   getPatient,
   toggleFavoriteDoctor,
@@ -11,6 +12,7 @@ import {
 } from "../controllers/patientController.js";
 import { authenticate, authorize } from "../controllers/authController.js";
 import { registerValidator, idValidator } from "../validators/validators.js";
+import upload from "../middlewares/multer.js";
 
 const router = Router();
 
@@ -20,20 +22,22 @@ router.use(authenticate);
 
 router
   .route("/profile")
-  .get(authorize("patient"), getPatientProfile)
-  .patch(authorize("patient"), updatePatientProfile)
-  .delete(authorize("patient"), deletePatientProfile);
-
-// NOTE: image upload multer and cloudinary
-// router.route("/profile/upload").post(upload.single("image"), uploadProfileImg);
+  .get(authorize("PATIENT"), getPatientProfile)
+  .patch(authorize("PATIENT"), updatePatientProfile)
+  .delete(authorize("PATIENT"), deletePatientProfile);
 
 router
-  .route("/favorites")
-  .get(authorize("patient"), getFavoriteDoctors)
-  .patch(authorize("patient"), toggleFavoriteDoctor);
+  .route("/profile/upload")
+  .post(authorize("PATIENT"), upload.single("image"), uploadProfileImg);
 
-router.get("/", authorize("doctor"), getPatients);
-router.get("/:id", idValidator, authorize("doctor"), getPatient);
+// NOTE: separate favorite
+router
+  .route("/favorites")
+  .get(authorize("PATIENT"), getFavoriteDoctors)
+  .patch(authorize("PATIENT"), toggleFavoriteDoctor);
+
+router.get("/", authorize("DOCTOR"), getPatients);
+router.get("/:id", idValidator, authorize("DOCTOR"), getPatient);
 
 /**
  * @swagger

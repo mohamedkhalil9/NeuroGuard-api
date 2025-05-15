@@ -17,14 +17,14 @@ router.use(authenticate);
 
 router
   .route("/")
-  // NOTE:working hours and validation
-  .post(appointmentValidator, authorize("patient"), createAppointment)
+  .post(appointmentValidator, authorize("PATIENT"), createAppointment)
+  // NOTE: admin customized here or separate endpoints?
   .get(getAppointments);
 
 router.route("/:id").get(idValidator, getAppointment);
 router
   .route("/:id/pay")
-  .post(idValidator, authorize("patient"), payAppointment);
+  .post(idValidator, authorize("PATIENT"), payAppointment);
 
 /**
  * @swagger
