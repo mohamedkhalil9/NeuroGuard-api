@@ -114,34 +114,40 @@ BASE_URI=http://127.0.0.1:8000   # URL of the model server
 
 ### 🧑‍⚕️ Patient Routes
 
-| Method | Endpoint                   | Description            |
-| ------ | -------------------------- | ---------------------- |
-| POST   | /api/v1/patients/register  | Register a new patient |
-| GET    | /api/v1/patients/profile   | Get patient profile    |
-| PATCH  | /api/v1/patients/profile   | Update patient profile |
-| DELETE | /api/v1/patients/profile   | Delete patient profile |
-| POST   | /api/v1/patients/favorites | Add favorite doctor    |
-| GET    | /api/v1/patients/favorites | Get favorite doctors   |
+| Method | Endpoint                         | Description                  | Users Allowed |
+| ------ | -------------------------------- | ---------------------------- | ------------- |
+| POST   | `api/v1/patients/register`       | Register a new patient       | public        |
+| GET    | `api/v1/patients/profile`        | Get patient profile          | patient       |
+| PATCH  | `api/v1/patients/profile`        | Update patient profile       | patient       |
+| DELETE | `api/v1/patients/profile`        | Delete patient profile       | patient       |
+| POST   | `api/v1/patients/profile/upload` | Upload patient profile image | patient       |
+| GET    | `api/v1/patients/favorites`      | Get favorite doctors         | patient       |
+| PATCH  | `api/v1/patients/favorites`      | Toggle favorite doctor       | patient       |
+| GET    | `api/v1/patients/`               | Get list of patients         | doctor        |
+| GET    | `api/v1/patients/:id`            | Get patient by ID            | doctor        |
 
 ### 👨‍⚕️ Doctor Routes
 
-| Method | Endpoint                 | Description           |
-| ------ | ------------------------ | --------------------- |
-| POST   | /api/v1/doctors/register | Register a new doctor |
-| GET    | /api/v1/doctors/profile  | Get doctor profile    |
-| PATCH  | /api/v1/doctors/profile  | Update doctor profile |
-| DELETE | /api/v1/doctors/profile  | Delete doctor profile |
-| GET    | /api/v1/doctors          | List all doctors      |
-| GET    | /api/v1/doctors/\:id     | Get a doctor by ID    |
+| Method | Endpoint                             | Description                 | Users Allowed |
+| ------ | ------------------------------------ | --------------------------- | ------------- |
+| POST   | `api/v1/doctors/register`            | Register a new doctor       | public        |
+| GET    | `api/v1/doctors/profile`             | Get doctor profile          | doctor        |
+| PATCH  | `api/v1/doctors/profile`             | Update doctor profile       | doctor        |
+| DELETE | `api/v1/doctors/profile`             | Delete doctor profile       | doctor        |
+| POST   | `api/v1/doctors/profile/upload`      | Upload doctor profile image | doctor        |
+| GET    | `api/v1/doctors/`                    | Get list of doctors         | public        |
+| GET    | `api/v1/doctors/:id`                 | Get doctor by ID            | public        |
+| GET    | `api/v1/doctors/:id/schedule/:date`  | Get doctor schedule by date | public        |
+| POST   | `api/v1/doctors/search/:searchQuery` | Search doctors              | public        |
 
 ### 📅 Appointment Routes
 
-| Method | Endpoint                      | Description            |
-| ------ | ----------------------------- | ---------------------- |
-| POST   | /api/v1/appointments          | Book a new appointment |
-| GET    | /api/v1/appointments          | Get all appointments   |
-| GET    | /api/v1/appointments/\:id     | Get appointment by ID  |
-| POST   | /api/v1/appointments/\:id/pay | Pay for an appointment |
+| Method | Endpoint                      | Description           | Users Allowed   |
+| ------ | ----------------------------- | --------------------- | --------------- |
+| POST   | `api/v1/appointments/`        | Create appointment    | patient         |
+| GET    | `api/v1/appointments/`        | Get all appointments  | doctor, patient |
+| GET    | `api/v1/appointments/:id`     | Get appointment by ID | doctor, patient |
+| POST   | `api/v1/appointments/:id/pay` | Pay for appointment   | patient         |
 
 ### 🧠 Stroke Routes (Requires External Models Server)
 
