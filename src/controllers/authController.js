@@ -35,8 +35,11 @@ export const authorize = (...roles) => {
 export const logout = asyncWrapper(async (req, res) => {
   req.logout((err) => {
     if (err) return new ApiError(err.message, 500);
-
-    res.sendStatus(204).clearCookie("connect.sid", { httpOnly: true });
+  });
+  res.status(200).clearCookie("connect.sid", { httpOnly: true }).json({
+    status: "success",
+    message: "Logged out Successfully",
+    data: null,
   });
 });
 
