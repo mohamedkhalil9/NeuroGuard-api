@@ -1,18 +1,13 @@
 import { Router } from "express";
 import {
   registerPatient,
-  getPatientProfile,
-  updatePatientProfile,
-  deletePatientProfile,
-  uploadProfileImg,
   getPatients,
   getPatient,
-  toggleFavoriteDoctor,
-  getFavoriteDoctors,
 } from "../controllers/patientController.js";
 import { authenticate, authorize } from "../controllers/authController.js";
 import { registerValidator, idValidator } from "../validators/validators.js";
-import upload from "../middlewares/multer.js";
+import favoriteRoutes from "./favoriteRoutes.js";
+import profileRoutes from "./profileRoutes.js";
 
 const router = Router();
 
@@ -20,21 +15,9 @@ router.post("/register", registerValidator, registerPatient);
 
 router.use(authenticate);
 
-router
-  .route("/profile")
-  .get(authorize("PATIENT"), getPatientProfile)
-  .patch(authorize("PATIENT"), updatePatientProfile)
-  .delete(authorize("PATIENT"), deletePatientProfile);
+router.use("/profile", authorize("PATIENT"), profileRoutes);
 
-router
-  .route("/profile/upload")
-  .post(authorize("PATIENT"), upload.single("image"), uploadProfileImg);
-
-// NOTE: separate favorite
-router
-  .route("/favorites")
-  .get(authorize("PATIENT"), getFavoriteDoctors)
-  .patch(authorize("PATIENT"), toggleFavoriteDoctor);
+router.use("/favorites", authorize("PATIENT"), favoriteRoutes);
 
 router.get("/", authorize("DOCTOR"), getPatients);
 router.get("/:id", idValidator, authorize("DOCTOR"), getPatient);
