@@ -1,22 +1,25 @@
 import { Router } from "express";
-import { getAllUsers } from "../controllers/adminController.js";
-import { idValidator } from "./../validators/validators.js";
+import {
+  registerAdmin,
+  getAllAppointments,
+  getAllPatients,
+  getAllUsers,
+} from "../controllers/adminController.js";
 import { authenticate, authorize } from "../controllers/authController.js";
+import { registerValidator } from "../validators/validators.js";
+import profileRoutes from "./profileRoutes.js";
 
 const router = Router();
 
+router.post("/register", registerValidator, registerAdmin);
+
 router.use(authenticate, authorize("ADMIN"));
 
-//router.get('/appointments', getAllAppointments)
-//router.get('/patients', , getAllPatients)
-//router.get('/users', getAllUsers)
+router.get("/appointments", getAllAppointments);
+router.get("/patients", getAllPatients);
+router.get("/users", getAllUsers);
 
-// NOTE: separate profile routes
-// router
-//   .route("/profile")
-//   .get(getUserProfile)
-//   .patch(updateUserProfile)
-//   .delete(deleteUserProfile);
+router.use("/profile", profileRoutes);
 
 /**
  * openapi
