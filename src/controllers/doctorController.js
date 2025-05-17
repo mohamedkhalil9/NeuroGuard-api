@@ -3,7 +3,6 @@ import Doctor from "./../models/doctorModel.js";
 import asyncWrapper from "./../middlewares/asyncWrapper.js";
 import ApiError from "./../utils/apiError.js";
 import bcrypt from "bcrypt";
-import { v2 as cloudinary } from "cloudinary";
 import {
   getAvailableSchedule,
   toEgyptTime,
@@ -47,20 +46,6 @@ export const registerDoctor = asyncWrapper(async (req, res) => {
   });
 
   res.status(201).json({ status: "success", data: newDoctor });
-});
-
-export const uploadProfileImg = asyncWrapper(async (req, res) => {
-  const id = req.user._id;
-  const img = req.file;
-
-  const doctor = await Doctor.findById(id);
-  const upload = await cloudinary.uploader.upload(img.path);
-  const url = upload.secure_url;
-
-  doctor.profileImg = url;
-  await doctor.save();
-
-  res.status(200).json({ status: "success", data: { doctor } });
 });
 
 export const getDoctors = asyncWrapper(async (req, res) => {
@@ -166,34 +151,4 @@ export const getDoctorSchedule = asyncWrapper(async (req, res) => {
       doctor,
     },
   });
-});
-
-export const getDoctorProfile = asyncWrapper(async (req, res) => {
-  const id = req.user._id;
-
-  const doctor = await Doctor.findById(id).select("-password");
-  if (!doctor) throw new ApiError(`there is no doctor with id ${id}`, 404);
-
-  res.status(200).json({ status: "success", data: { doctor } });
-});
-
-export const updateDoctorProfile = asyncWrapper(async (req, res) => {
-  const id = req.user._id;
-
-  const doctor = await Doctor.findById(id);
-  if (!doctor) throw new ApiError(`there is no doctor with id ${id}`, 404);
-
-  const newDoctor = { ...req.body };
-  const updatedDoctor = await Doctor.findByIdAndUpdate(id, newDoctor, {
-    new: true,
-  });
-
-  res.status(200).json({ status: "success", data: { updatedDoctor } });
-});
-
-export const deleteDoctorProfile = asyncWrapper(async (req, res) => {
-  const id = req.user._id;
-  const doctor = await Doctor.findByIdAndDelete(id);
-  if (!doctor) throw new ApiError(`there is no doctor with id ${id}`, 404);
-  res.status(200).json({ status: "success", data: null });
 });

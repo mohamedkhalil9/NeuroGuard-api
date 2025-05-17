@@ -5,10 +5,6 @@ import {
   getDoctor,
   getDoctorSchedule,
   registerDoctor,
-  uploadProfileImg,
-  getDoctorProfile,
-  updateDoctorProfile,
-  deleteDoctorProfile,
 } from "../controllers/doctorController.js";
 import {
   registerValidator,
@@ -17,26 +13,13 @@ import {
   scheduleValidator,
 } from "./../validators/validators.js";
 import { authenticate, authorize } from "../controllers/authController.js";
-import upload from "../middlewares/multer.js";
+import profileRoutes from "./profileRoutes.js";
 
 const router = Router();
 
 router.post("/register", registerValidator, registerDoctor);
 
-router
-  .route("/profile")
-  .get(authenticate, authorize("DOCTOR"), getDoctorProfile)
-  .patch(authenticate, authorize("DOCTOR"), updateDoctorProfile)
-  .delete(authenticate, authorize("DOCTOR"), deleteDoctorProfile);
-
-router
-  .route("/profile/upload")
-  .post(
-    authenticate,
-    authorize("DOCTOR"),
-    upload.single("image"),
-    uploadProfileImg,
-  );
+router.use("/profile", authenticate, authorize("DOCTOR"), profileRoutes);
 
 router.get("/", getDoctors);
 router.get("/:id", idValidator, getDoctor);
