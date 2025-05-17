@@ -27,21 +27,28 @@ export const registerDoctor = asyncWrapper(async (req, res) => {
   const user = await User.findOne({ email: email });
   if (user) throw new ApiError("email aleardy existed", 409);
 
+  const fee = appointmentFee ?? 100;
+  const schedule = workingDays ?? [
+    { day: 0, start: "14:00", end: "18:00" },
+    { day: 1, start: "16:00", end: "20:00" },
+    { day: 3, start: "20:00", end: "22:00" },
+  ];
+
   const hashedPassword = await bcrypt.hash(password, 10);
   const newDoctor = await Doctor.create({
     firstName,
     lastName,
     email,
     password: hashedPassword,
-    profileImgh: `https://eu.ui-avatars.com/api/?name=${firstName}+${lastName}`,
+    profileImg: `https://eu.ui-avatars.com/api/?name=${firstName}+${lastName}`,
     role: "DOCTOR",
     dateOfBirth,
     gender,
     phone,
     country,
     address,
-    appointmentFee,
-    workingDays,
+    appointmentFee: fee,
+    workingDays: schedule,
     defaultWorkingDays,
     specialization,
   });
