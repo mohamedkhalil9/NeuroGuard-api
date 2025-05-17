@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema({
   },
   profileImg: {
     type: String,
-    default: "placeholder",
   },
   role: {
     type: String,

@@ -26,6 +26,7 @@ export const registerAdmin = asyncWrapper(async (req, res) => {
     lastName,
     email,
     password: hashedPassword,
+    profileImgh: `https://eu.ui-avatars.com/api/?name=${firstName}+${lastName}`,
     role: "ADMIN",
     dateOfBirth,
     gender,
