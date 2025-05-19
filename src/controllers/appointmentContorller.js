@@ -99,10 +99,15 @@ export const getAppointments = asyncWrapper(async (req, res) => {
   else if (user.role === "DOCTOR") query.doctor = user._id;
 
   const appointments = await Appointment.find(query)
-    .populate("doctor") // NOTE:select important fields only
-    .populate("patient");
+    .populate(
+      "doctor",
+      " firstName lastName profileImg appointmentFee specialization",
+    )
+    .populate(
+      "patient",
+      " firstName lastName profileImg, gender, favoriteDoctors",
+    );
 
-  // NOTE:
   if (appointments.length === 0)
     throw new ApiError("there is no appointments for this user", 404);
 
@@ -152,8 +157,14 @@ export const getAppointment = asyncWrapper(async (req, res) => {
   const { id } = req.params;
 
   const appointment = await Appointment.findById(id)
-    .populate("doctor")
-    .populate("patient");
+    .populate(
+      "doctor",
+      " firstName lastName profileImg appointmentFee specialization",
+    )
+    .populate(
+      "patient",
+      " firstName lastName profileImg, gender, favoriteDoctors",
+    );
 
   if (!appointment) throw new ApiError("appointment not found", 404);
 

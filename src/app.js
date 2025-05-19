@@ -42,7 +42,7 @@ app.use(helmet());
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:5173",
+    // origin: "http://localhost:5173",
   }),
 );
 app.use(morgan("dev"));

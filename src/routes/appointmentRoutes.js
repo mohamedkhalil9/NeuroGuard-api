@@ -18,7 +18,6 @@ router.use(authenticate);
 router
   .route("/")
   .post(appointmentValidator, authorize("PATIENT"), createAppointment)
-  // NOTE: admin customized here or separate endpoints?
   .get(getAppointments);
 
 router.route("/:id").get(idValidator, getAppointment);
