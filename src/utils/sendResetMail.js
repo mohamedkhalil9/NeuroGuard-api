@@ -1,15 +1,16 @@
 import nodemailer from "nodemailer";
+import asyncWrapper from "../middlewares/asyncWrapper.js";
 import { emailTemplate } from "./emailTemplate.js";
 
-export const sendResetMail = (email, otp) => {
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASS,
-    },
-  });
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASS,
+  },
+});
 
+export const sendResetMail = asyncWrapper(async (email, otp) => {
   const mail = emailTemplate(otp);
 
   let mailOptions = {
@@ -19,11 +20,5 @@ export const sendResetMail = (email, otp) => {
     html: mail,
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log("Error occurred: ", error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
-  });
-};
+  await transporter.sendMail(mailOptions);
+});

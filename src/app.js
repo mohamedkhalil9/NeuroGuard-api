@@ -8,6 +8,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
+import compression from "compression";
 import swaggerUi from "swagger-ui-express";
 import spec from "./utils/swagger.js";
 import "dotenv/config";
@@ -20,6 +21,7 @@ connectDB();
 connectCloudinary();
 
 const app = express();
+app.use(compression());
 app.use(express.json());
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(
