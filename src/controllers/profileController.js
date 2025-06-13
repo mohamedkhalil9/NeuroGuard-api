@@ -71,10 +71,21 @@ export const uploadProfileImg = asyncWrapper(async (req, res) => {
   else if (role === "DOCTOR") Model = Doctor;
   else if (role === "ADMIN") Model = User;
 
-  const upload = await cloudinary.uploader.upload(img.path);
+  // const upload = await cloudinary.uploader.upload(img.path);
+  const upload = await new Promise((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream({ resource_type: "image" }, (error, result) =>
+        error ? reject(error) : resolve(result),
+      )
+      .end(img.buffer);
+  });
   const url = upload.secure_url;
 
-  const user = await Model.findByIdAndUpdate(id, { profileImg: url });
+  const user = await Model.findByIdAndUpdate(
+    id,
+    { profileImg: url },
+    { new: true },
+  ).select("-password");
 
   res.status(200).json({ status: "success", data: user });
 });

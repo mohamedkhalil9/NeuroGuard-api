@@ -13,7 +13,6 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (userId, done) => {
   try {
     const user = await User.findById(userId);
-
     if (!user) throw new ApiError("user not found", 404);
 
     done(null, user);
@@ -51,7 +50,6 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const user = await User.findOne({ googleId: profile.id });
-
         if (user) return done(null, user);
 
         const fullName = profile.displayName.split(" ");
@@ -64,11 +62,6 @@ passport.use(
           email: profile.emails[0].value,
           role: "PATIENT",
           googleId: profile.id,
-          // dateOfBirth,
-          // gender,
-          // phone,
-          // country,
-          // address,
         });
 
         done(null, newPatient);
