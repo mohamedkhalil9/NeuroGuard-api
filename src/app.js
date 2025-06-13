@@ -16,6 +16,7 @@ import connectDB from "./config/db.js";
 import connectCloudinary from "./config/cloudinary.js";
 import "./services/passport.js";
 import appRouter from "./routes/indexRouter.js";
+import { notFound, globalErrorHandler } from "./middlewares/errorHandler.js";
 
 connectDB();
 connectCloudinary();
@@ -59,18 +60,7 @@ app.get("/docs.json", (req, res) => {
 });
 app.use("/api/v1", appRouter);
 
-app.all("*", (req, res, next) => {
-  return res
-    .status(404)
-    .json({ status: "error", message: "this resource is not available" });
-});
-app.use((error, req, res, next) => {
-  res.status(error.statusCode || 500).json({
-    status: error.statusText || "error",
-    message: error.message,
-    code: error.statusCode || 500,
-    data: null,
-  });
-});
+app.all("*", notFound);
+app.use(globalErrorHandler);
 
 export default app;
