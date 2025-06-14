@@ -11,13 +11,17 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendResetMail = asyncWrapper(async (email, otp) => {
-  const mail = emailTemplate(otp);
+  const mail = emailTemplate;
 
+  const resetTemplate = mail.replace(/{{OTP_CODE}}/g, otp);
+  for (let i = 0; i < 6; i++) {
+    resetTemplate = resetTemplate.replace(`{{DIGIT_${i + 1}}}`, otp[i]);
+  }
   let mailOptions = {
     from: process.env.email,
     to: email,
     subject: "NeuroGuard Password Recovery",
-    html: mail,
+    html: resetTemplate,
   };
 
   await transporter.sendMail(mailOptions);

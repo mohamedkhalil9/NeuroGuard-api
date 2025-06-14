@@ -61,7 +61,7 @@ export const forgotPassword = asyncWrapper(async (req, res) => {
     .status(200)
     .cookie("reset", email, {
       httpOnly: true,
-      maxAge: 1000 * 60 * 2,
+      maxAge: 1000 * 60 * 5,
     })
     .json({ status: "success", data: user.email });
 });
