@@ -55,7 +55,7 @@ export const forgotPassword = asyncWrapper(async (req, res) => {
   user.otpExpire = Date.now() + 1000 * 60 * 5;
   await user.save();
 
-  sendResetMail(email, otp);
+  await sendResetMail(email, otp);
 
   res
     .status(200)

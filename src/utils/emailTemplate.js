@@ -76,8 +76,6 @@ export const emailTemplate = `
                             <td class="digit">{{DIGIT_2}}</td>
                             <td class="digit">{{DIGIT_3}}</td>
                             <td class="digit">{{DIGIT_4}}</td>
-                            <td class="digit">{{DIGIT_5}}</td>
-                            <td class="digit">{{DIGIT_6}}</td>
                         </tr>
                     </table>
                 </div>

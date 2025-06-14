@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import asyncWrapper from "../middlewares/asyncWrapper.js";
 import { emailTemplate } from "./emailTemplate.js";
+import ApiError from "./apiError.js";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -10,19 +11,24 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendResetMail = asyncWrapper(async (email, otp) => {
-  const mail = emailTemplate;
+export const sendResetMail = async (email, otp) => {
+  try {
+    const mail = emailTemplate;
 
-  const resetTemplate = mail.replace(/{{OTP_CODE}}/g, otp);
-  for (let i = 0; i < 6; i++) {
-    resetTemplate = resetTemplate.replace(`{{DIGIT_${i + 1}}}`, otp[i]);
+    let resetTemplate = mail.replace(/{{OTP_CODE}}/g, otp);
+    for (let i = 0; i < 4; i++) {
+      resetTemplate = resetTemplate.replace(`{{DIGIT_${i + 1}}}`, otp[i]);
+    }
+    let mailOptions = {
+      from: process.env.email,
+      to: email,
+      subject: "NeuroGuard Password Recovery",
+      html: resetTemplate,
+    };
+
+    const res = await transporter.sendMail(mailOptions);
+    return res;
+  } catch (error) {
+    throw new ApiError(error.message, 500);
   }
-  let mailOptions = {
-    from: process.env.email,
-    to: email,
-    subject: "NeuroGuard Password Recovery",
-    html: resetTemplate,
-  };
-
-  await transporter.sendMail(mailOptions);
-});
+};
