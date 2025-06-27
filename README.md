@@ -13,7 +13,7 @@ NeuroGuard API is a Node.js-based backend application designed to provide variou
 - [Routes](#routes)
 
   - [Auth Routes](#auth-routes)
-  - [User Routes](#user-routes)
+  - [Admin Routes](#admin-routes)
   - [Patient Routes](#patient-routes)
   - [Doctor Routes](#doctor-routes)
   - [Appointment Routes](#appointment-routes)
@@ -87,6 +87,7 @@ BASE_URI=http://127.0.0.1:8000   # URL of the model server
 ## 📖 API Documentation
 
 - [Apidog Live API Documentation](https://6hjm278nfp.apidog.io)
+
 * Swagger UI: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 * JSON Spec: [http://localhost:3000/docs.json](http://localhost:3000/docs.json)
 
@@ -106,13 +107,14 @@ BASE_URI=http://127.0.0.1:8000   # URL of the model server
 | POST   | /api/v1/auth/verify-otp      | Verify OTP                  |
 | PATCH  | /api/v1/auth/reset-password  | Reset password              |
 
-### 👤 User Routes
+### 👤 Admin Routes
 
-| Method | Endpoint              | Description         |
-| ------ | --------------------- | ------------------- |
-| GET    | /api/v1/users/profile | Get user profile    |
-| PATCH  | /api/v1/users/profile | Update user profile |
-| DELETE | /api/v1/users/profile | Delete user profile |
+| Method | Endpoint                   | Description                 |
+| ------ | -------------------------- | --------------------------- |
+| POST   | /api/v1/admin/register     | Register admin              |
+| GET    | /api/v1/admin/users        | Get all users               |
+| GET    | /api/v1/admin/patients     | Get all patients            |
+| GET    | /api/v1/admin/appointments | Get all booked appointments |
 
 ### 🧑‍⚕️ Patient Routes
 
