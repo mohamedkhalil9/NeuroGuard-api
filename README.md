@@ -6,35 +6,36 @@ NeuroGuard API is a Node.js-based backend application designed to provide variou
 
 ## 📚 Table of Contents
 
-* [Features](#features)
-* [Installation](#installation)
-* [Environment Variables](#environment-variables)
-* [API Documentation](#api-documentation)
-* [Routes](#routes)
+- [Features](#features)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [API Documentation](#api-documentation)
+- [Routes](#routes)
 
-  * [Auth Routes](#auth-routes)
-  * [User Routes](#user-routes)
-  * [Patient Routes](#patient-routes)
-  * [Doctor Routes](#doctor-routes)
-  * [Appointment Routes](#appointment-routes)
-  * [Stroke Routes](#stroke-routes-requires-external-models-server)
-  * [AI Assistant & Document Analysis](#ai-assistant--document-analysis-via-model-server)
-* [Run Locally](#run-locally)
-* [Dependencies](#dependencies)
-* [License](#license)
+  - [Auth Routes](#auth-routes)
+  - [User Routes](#user-routes)
+  - [Patient Routes](#patient-routes)
+  - [Doctor Routes](#doctor-routes)
+  - [Appointment Routes](#appointment-routes)
+  - [Stroke Routes](#stroke-routes-requires-external-models-server)
+  - [AI Assistant & Document Analysis](#ai-assistant--document-analysis-via-model-server)
+
+- [Run Locally](#run-locally)
+- [Dependencies](#dependencies)
+- [License](#license)
 
 ---
 
 ## 🚀 Features
 
-* User authentication (local and Google OAuth)
-* Stroke prediction using various GAN models (SRGAN, CycleGAN, Denoising GAN)
-* Image upload and processing
-* Patient and doctor management
-* Appointment booking and management
-* Chat assistant with RAG capabilities
-* PDF upload and analysis with chat integration
-* API documentation using Swagger
+- User authentication (local and Google OAuth)
+- Stroke prediction using various GAN models (SRGAN, CycleGAN, Denoising GAN)
+- Image upload and processing
+- Patient and doctor management
+- Appointment booking and management
+- Chat assistant with RAG capabilities
+- PDF upload and analysis with chat integration
+- API documentation using Swagger
 
 ---
 
@@ -85,6 +86,7 @@ BASE_URI=http://127.0.0.1:8000   # URL of the model server
 
 ## 📖 API Documentation
 
+- [Apidog Live API Documentation](https://6hjm278nfp.apidog.io)
 * Swagger UI: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 * JSON Spec: [http://localhost:3000/docs.json](http://localhost:3000/docs.json)
 
@@ -161,11 +163,11 @@ BASE_URI=http://127.0.0.1:8000   # URL of the model server
 
 ### 🤖 AI Assistant & Document Analysis (via Model Server)
 
-| Method | Endpoint       | Description                         |
-| ------ | -------------- | ----------------------------------- |
-| POST   | /chat/stream   | Stream chat with RAG assistant      |
-| POST   | /pdf/upload    | Upload and analyze PDF              |
-| GET    | /chat\_history | Retrieve chat history by session ID |
+| Method | Endpoint      | Description                         |
+| ------ | ------------- | ----------------------------------- |
+| POST   | /chat/stream  | Stream chat with RAG assistant      |
+| POST   | /pdf/upload   | Upload and analyze PDF              |
+| GET    | /chat_history | Retrieve chat history by session ID |
 
 #### 1. **Stream Chat (RAG)**
 
@@ -182,16 +184,16 @@ BASE_URI=http://127.0.0.1:8000   # URL of the model server
 **Response:** Server-Sent Events (`text/event-stream`)
 **Notes:**
 
-* Use Postman’s "Event Stream" or `curl -N` to follow the stream.
-* Maintains history per `session_id`.
+- Use Postman’s "Event Stream" or `curl -N` to follow the stream.
+- Maintains history per `session_id`.
 
 #### 2. **Upload & Analyze PDF**
 
 **URL:** `POST /pdf/upload`
 **Body (form-data):**
 
-* `session_id`: string
-* `file`: PDF (`application/pdf`)
+- `session_id`: string
+- `file`: PDF (`application/pdf`)
 
 **Response (JSON):**
 
@@ -205,20 +207,20 @@ BASE_URI=http://127.0.0.1:8000   # URL of the model server
 
 **Notes:**
 
-* Extracted text is automatically appended to the next `/chat/stream` call.
+- Extracted text is automatically appended to the next `/chat/stream` call.
 
 #### 3. **Get Chat History**
 
 **URL:** `GET /chat_history`
 
-* `session_id`: string (query or form)
+- `session_id`: string (query or form)
 
 **Response (JSON):**
 
 ```json
 {
   "chat_history": [
-    { "sender": "user",      "message": "Hi" },
+    { "sender": "user", "message": "Hi" },
     { "sender": "assistant", "message": "Hello!" }
   ]
 }
@@ -250,15 +252,13 @@ npm run dev
 
 Key dependencies used in this project:
 
-* **Express**: Web framework for Node.js
-* **Mongoose**: MongoDB object modeling
-* **Passport**: Authentication middleware
-* **Swagger**: API documentation
-* **Multer**: File upload handling
-* **Axios**: HTTP client for API requests
-* **Nodemailer**: Email sending
-* **Bcrypt**: Password hashing
+- **Express**: Web framework for Node.js
+- **Mongoose**: MongoDB object modeling
+- **Passport**: Authentication middleware
+- **Swagger**: API documentation
+- **Multer**: File upload handling
+- **Axios**: HTTP client for API requests
+- **Nodemailer**: Email sending
+- **Bcrypt**: Password hashing
 
 For the full list, see `package.json`.
-
-
