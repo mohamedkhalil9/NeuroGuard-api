@@ -17,6 +17,7 @@ import connectCloudinary from "./config/cloudinary.js";
 import "./services/passport.js";
 import appRouter from "./routes/indexRouter.js";
 import { notFound, globalErrorHandler } from "./middlewares/errorHandler.js";
+import allowedOrigins from "./utils/allowedOrigins.js";
 
 connectDB();
 connectCloudinary();
@@ -45,7 +46,7 @@ app.use(helmet());
 app.use(
   cors({
     credentials: true,
-    // origin: "http://localhost:5173",
+    origin: allowedOrigins,
   }),
 );
 app.use(morgan("dev"));
