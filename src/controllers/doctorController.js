@@ -23,6 +23,8 @@ export const registerDoctor = asyncWrapper(async (req, res) => {
     address,
     workingDays,
     defaultWorkingDays,
+    nationalId,
+    academicYear,
   } = req.body;
   const user = await User.findOne({ email: email });
   if (user) throw new ApiError("email aleardy existed", 409);
@@ -51,6 +53,8 @@ export const registerDoctor = asyncWrapper(async (req, res) => {
     workingDays: schedule,
     defaultWorkingDays,
     specialization,
+    nationalId,
+    academicYear,
   });
 
   res.status(201).json({ status: "success", data: newDoctor });
