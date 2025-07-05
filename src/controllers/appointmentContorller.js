@@ -61,10 +61,10 @@ export const payAppointment = asyncWrapper(async (req, res) => {
     mode: "payment",
     customer_email: req.user.email,
     // success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-    // success_url: `${process.env.CLIENT_URL}/appointments`,
-    success_url: `http://localhost:4000/api/v1/appointments`,
-    // cancel_url: `${process.env.CLIENT_URL}/appointments`,
-    cancel_url: `http://localhost:4000/api/v1/appointments`,
+    success_url: `${process.env.CLIENT_URL}appointment`,
+    // success_url: `http://localhost:4000/api/v1/appointments`,
+    cancel_url: `${process.env.CLIENT_URL}doctors`,
+    // cancel_url: `http://localhost:4000/api/v1/appointments`,
     line_items: [
       {
         price_data: {
