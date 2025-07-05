@@ -67,14 +67,16 @@ export const getDoctors = asyncWrapper(async (req, res) => {
   excludedFields.forEach((el) => delete query[el]);
 
   const page = +req.query.page || 1;
-  const limit = +req.query.limit || 10;
+  const limit = +req.query.limit || 30;
   const skip = (page - 1) * limit;
 
   // NOTE: we should count the results not the document itself
   // const count = await Doctor.countDocuments();
   // if (skip > count) throw new ApiError("no more items", 400);
 
-  const sort = req.query.sort?.split(",").join(" ");
+  const sort = req.query.sort
+    ? req.query.sort.split(",").join(" ")
+    : "-createdAt";
   const fields = req.query.fields
     ? req.query.fields.split(",").join(" ")
     : "-password";
